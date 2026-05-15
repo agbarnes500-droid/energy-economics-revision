@@ -1,0 +1,1799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Energy Economics Revision</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;font-size:15px;line-height:1.6;background:var(--color-background-tertiary,#f5f5f2);color:var(--color-text-primary,#1a1a1a);min-height:100vh}
+.app{max-width:820px;margin:0 auto;padding:1rem}
+.header{background:var(--color-background-primary,#fff);border:0.5px solid var(--color-border-tertiary,rgba(0,0,0,0.15));border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem}
+.header-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.header h1{font-size:19px;font-weight:500}
+.header-sub{font-size:12px;color:var(--color-text-secondary,#666);margin-top:2px}
+.xp-bar-wrap{background:var(--color-background-secondary,#f0efea);border-radius:6px;height:8px;flex:1;min-width:80px;overflow:hidden}
+.xp-bar-fill{height:100%;background:#378add;border-radius:6px;transition:width 0.4s}
+.badges{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px}
+.badge-pill{padding:3px 10px;border-radius:20px;font-size:12px;font-weight:500;background:#e6f1fb;color:#185fa5}
+.streak-pill{padding:3px 10px;border-radius:20px;font-size:12px;font-weight:500;background:#FAEEDA;color:#854F0B}
+.level-pill{padding:3px 10px;border-radius:20px;font-size:12px;font-weight:500;background:#eaf3de;color:#3b6d11}
+.weak-pill{padding:3px 10px;border-radius:20px;font-size:12px;font-weight:500;background:#fcebeb;color:#a32d2d}
+.tabs{display:flex;gap:5px;flex-wrap:wrap}
+.tab{padding:6px 12px;border-radius:8px;border:0.5px solid rgba(0,0,0,0.3);background:transparent;cursor:pointer;font-size:13px;color:var(--color-text-secondary,#666);transition:all 0.15s}
+.tab.active{background:#e6f1fb;border-color:#378add;color:#185fa5;font-weight:500}
+.tab:hover:not(.active){background:var(--color-background-secondary,#f0efea)}
+.panel{display:none}.panel.active{display:block}
+.chat-wrap{background:var(--color-background-primary,#fff);border:0.5px solid rgba(0,0,0,0.15);border-radius:12px;overflow:hidden}
+.chat-msgs{height:380px;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:88%;padding:10px 14px;border-radius:10px;font-size:14px;line-height:1.6}
+.msg.user{align-self:flex-end;background:#e6f1fb;color:#185fa5;border-bottom-right-radius:3px}
+.msg.ai{align-self:flex-start;background:var(--color-background-secondary,#f0efea);color:var(--color-text-primary,#1a1a1a);border-bottom-left-radius:3px}
+.msg.thinking{color:var(--color-text-secondary,#666);font-style:italic}
+.chat-input-row{display:flex;gap:8px;padding:12px;border-top:0.5px solid rgba(0,0,0,0.15)}
+.chat-input-row input{flex:1;padding:8px 12px;border-radius:8px;border:0.5px solid rgba(0,0,0,0.3);background:var(--color-background-primary,#fff);color:var(--color-text-primary,#1a1a1a);font-size:14px}
+.chat-input-row input:focus{outline:none;border-color:#378add}
+.btn-send{padding:8px 14px;border-radius:8px;border:0.5px solid rgba(0,0,0,0.3);background:transparent;cursor:pointer;font-size:14px;color:var(--color-text-primary,#1a1a1a)}
+.btn-send:hover{background:var(--color-background-secondary,#f0efea)}
+.btn-send:disabled{opacity:0.4;cursor:not-allowed}
+.suggestions{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.sug{padding:5px 12px;border-radius:20px;border:0.5px solid rgba(0,0,0,0.3);background:var(--color-background-primary,#fff);cursor:pointer;font-size:13px;color:var(--color-text-secondary,#666)}
+.sug:hover{background:var(--color-background-secondary,#f0efea);color:var(--color-text-primary,#1a1a1a)}
+.diag-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.diag-card{background:var(--color-background-primary,#fff);border:0.5px solid rgba(0,0,0,0.15);border-radius:12px;padding:1rem}
+.diag-title{font-size:13px;font-weight:500;margin-bottom:8px}
+.diag-card svg{width:100%;height:auto;display:block}
+.slider-row{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:12px;color:var(--color-text-secondary,#666)}
+.slider-row input[type=range]{flex:1;accent-color:#378add}
+.slider-val{min-width:30px;text-align:right;font-weight:500;color:var(--color-text-primary,#1a1a1a);font-size:12px}
+.diag-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;font-size:11px}
+.leg-item{display:flex;align-items:center;gap:4px;color:var(--color-text-secondary,#666)}
+.leg-dot{width:10px;height:3px;border-radius:2px}
+.quiz-header{background:var(--color-background-primary,#fff);border:0.5px solid rgba(0,0,0,0.15);border-radius:12px;padding:1rem 1.25rem;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.progress-bar{height:6px;background:var(--color-background-secondary,#e8e8e4);border-radius:3px;flex:1;min-width:60px;overflow:hidden}
+.progress-fill{height:100%;background:#378add;border-radius:3px;transition:width 0.35s}
+.score-badge{font-size:13px;font-weight:500;color:#185fa5;white-space:nowrap}
+.q-card{background:var(--color-background-primary,#fff);border:0.5px solid rgba(0,0,0,0.15);border-radius:12px;padding:1.25rem;transition:background 0.4s}
+.q-meta{font-size:12px;color:var(--color-text-secondary,#666);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.04em}
+.q-text{font-size:15px;font-weight:500;margin-bottom:1rem;line-height:1.5}
+.q-svg-wrap{margin-bottom:1rem;border:0.5px solid rgba(0,0,0,0.1);border-radius:8px;overflow:hidden;background:#fafaf8;padding:8px}
+.q-svg-wrap svg{width:100%;height:auto;display:block}
+.q-options{display:flex;flex-direction:column;gap:8px;margin-bottom:1rem}
+.q-opt{padding:10px 14px;border-radius:8px;border:0.5px solid rgba(0,0,0,0.3);background:var(--color-background-primary,#fff);cursor:pointer;font-size:14px;text-align:left;color:var(--color-text-primary,#1a1a1a);transition:all 0.15s}
+.q-opt:hover:not(:disabled){background:var(--color-background-secondary,#f0efea)}
+.q-opt.correct{background:#eaf3de;border-color:#639922;color:#3b6d11}
+.q-opt.wrong{background:#fcebeb;border-color:#e24b4a;color:#a32d2d}
+.q-opt:disabled{cursor:default}
+.q-opt.bounce{animation:bounce 0.35s}
+@keyframes bounce{0%{transform:scale(1)}40%{transform:scale(1.04)}100%{transform:scale(1)}}
+.short-ans-wrap{display:flex;gap:8px;margin-bottom:1rem}
+.short-ans-wrap input{flex:1;padding:9px 12px;border-radius:8px;border:0.5px solid rgba(0,0,0,0.3);background:var(--color-background-primary,#fff);color:var(--color-text-primary,#1a1a1a);font-size:14px}
+.short-ans-wrap input:focus{outline:none;border-color:#378add}
+.feedback{padding:10px 14px;border-radius:8px;font-size:14px;margin-bottom:1rem;line-height:1.5}
+.feedback.correct{background:#eaf3de;color:#3b6d11;border:0.5px solid #639922}
+.feedback.wrong{background:#fcebeb;color:#a32d2d;border:0.5px solid #e24b4a}
+.q-actions{display:flex;gap:8px}
+.btn-primary{padding:8px 18px;border-radius:8px;border:0.5px solid #378add;background:#e6f1fb;cursor:pointer;font-size:14px;color:#185fa5;font-weight:500}
+.btn-primary:hover{opacity:0.85}
+.btn-weak{padding:8px 18px;border-radius:8px;border:0.5px solid #e24b4a;background:#fcebeb;cursor:pointer;font-size:14px;color:#a32d2d;font-weight:500}
+.btn-weak:hover{opacity:0.85}
+.btn-skip{padding:8px 14px;border-radius:8px;border:0.5px solid rgba(0,0,0,0.15);background:transparent;cursor:pointer;font-size:14px;color:var(--color-text-secondary,#666)}
+.btn-skip:hover{background:var(--color-background-secondary,#f0efea)}
+.results-card{background:var(--color-background-primary,#fff);border:0.5px solid rgba(0,0,0,0.15);border-radius:12px;padding:2rem;text-align:center}
+.big-score{font-size:52px;font-weight:500;color:#378add;margin:1rem 0}
+.xp-gained{font-size:18px;font-weight:500;color:#3b6d11;margin-bottom:8px}
+.flash-correct{animation:flashG 0.5s}
+.flash-wrong{animation:flashR 0.5s}
+@keyframes flashG{0%{background:#eaf3de}100%{background:var(--color-background-primary,#fff)}}
+@keyframes flashR{0%{background:#fcebeb}100%{background:var(--color-background-primary,#fff)}}
+.fc-controls{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.fc-counter{font-size:13px;color:var(--color-text-secondary,#666)}
+.fc-wrap{perspective:1000px;height:260px;cursor:pointer;margin-bottom:10px}
+.fc-deck{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.5s}
+.fc-deck.flipped{transform:rotateY(180deg)}
+.fc-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.25rem;text-align:center;border:0.5px solid rgba(0,0,0,0.15)}
+.fc-front{background:var(--color-background-primary,#fff)}
+.fc-back{background:#e6f1fb;transform:rotateY(180deg)}
+.fc-label{font-size:11px;text-transform:uppercase;letter-spacing:0.07em;color:var(--color-text-secondary,#666);margin-bottom:6px}
+.fc-term{font-size:17px;font-weight:500;color:var(--color-text-primary,#1a1a1a);line-height:1.4;margin-bottom:6px}
+.fc-def{font-size:13px;color:#185fa5;line-height:1.6}
+.fc-hint{font-size:11px;color:var(--color-text-secondary,#666);margin-top:10px}
+.fc-svg-wrap{margin:6px 0;border-radius:6px;overflow:hidden}
+.fc-svg-wrap svg{width:100%;max-width:220px;height:auto;display:block}
+.fc-nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:8px}
+.fc-rate{display:none;gap:8px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.fc-rate.visible{display:flex}
+.weak-count{font-size:12px;color:#a32d2d;padding:3px 8px;background:#fcebeb;border-radius:10px}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1><i class="ti ti-bolt"></i> Energy Economics</h1>
+      <div class="header-sub">Revision companion · Sessions 1–12</div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('tutor',this)"><i class="ti ti-message-circle"></i> Tutor</button>
+      <button class="tab" onclick="switchTab('diagrams',this)"><i class="ti ti-chart-line"></i> Diagrams</button>
+      <button class="tab" onclick="switchTab('quiz',this)"><i class="ti ti-checklist"></i> Quiz</button>
+      <button class="tab" onclick="switchTab('flash',this)"><i class="ti ti-cards"></i> Flashcards</button>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="level-pill"><i class="ti ti-award"></i> Level <span id="level-num">1</span></span>
+    <span class="badge-pill"><i class="ti ti-star"></i> <span id="xp-num">0</span> XP</span>
+    <span class="streak-pill"><i class="ti ti-flame"></i> Streak: <span id="streak-num">0</span></span>
+    <div class="xp-bar-wrap"><div class="xp-bar-fill" id="xp-bar" style="width:0%"></div></div>
+  </div>
+</div>
+
+<!-- TUTOR -->
+<div class="panel active" id="panel-tutor">
+  <div class="suggestions">
+    <button class="sug" onclick="askSug(this)">What is price elasticity of demand?</button>
+    <button class="sug" onclick="askSug(this)">Explain NPV and IRR</button>
+    <button class="sug" onclick="askSug(this)">How does a tax cause deadweight loss?</button>
+    <button class="sug" onclick="askSug(this)">What is LCOE?</button>
+    <button class="sug" onclick="askSug(this)">Explain merit order and dispatch</button>
+    <button class="sug" onclick="askSug(this)">What is the Hotelling Rule?</button>
+    <button class="sug" onclick="askSug(this)">Explain Contracts for Difference</button>
+    <button class="sug" onclick="askSug(this)">What is Peak Oil?</button>
+    <button class="sug" onclick="askSug(this)">Explain the OPEC cartel game</button>
+    <button class="sug" onclick="askSug(this)">What is a carbon externality?</button>
+    <button class="sug" onclick="askSug(this)">Explain energy scenario typology</button>
+    <button class="sug" onclick="askSug(this)">What are the Shell 2025 scenarios?</button>
+    <button class="sug" onclick="askSug(this)">Explain REMA and electricity market reform</button>
+    <button class="sug" onclick="askSug(this)">What is the ESO Pathways Framework?</button>
+    <button class="sug" onclick="askSug(this)">Explain the Stern Review key points</button>
+    <button class="sug" onclick="askSug(this)">What is the role of energy storage?</button>
+    <button class="sug" onclick="askSug(this)">Explain pumped hydro storage</button>
+    <button class="sug" onclick="askSug(this)">What is revenue stacking for batteries?</button>
+    <button class="sug" onclick="askSug(this)">Explain the rebound effect in energy efficiency</button>
+    <button class="sug" onclick="askSug(this)">What is the UK Warm Homes Plan?</button>
+    <button class="sug" onclick="askSug(this)">Explain demand flexibility and the DFS</button>
+    <button class="sug" onclick="askSug(this)">What is the long-duration energy storage cap and floor?</button>
+  </div>
+  <div class="chat-wrap">
+    <div class="chat-msgs" id="chat-msgs">
+      <div class="msg ai">Hi! I'm your Energy Economics tutor covering Sessions 1–12. Ask me anything — supply &amp; demand, elasticity, costs, monopolies, investment appraisal (NPV/IRR/LCOE), electricity markets, global oil/gas/coal markets, the Hotelling Rule, OPEC game theory, externalities, the Stern Review, carbon pricing, future energy scenarios (Shell, IEA, ESO), electricity market reform (REMA, CfD, Capacity Market), energy storage (technologies, markets, policy), energy demand &amp; efficiency, the rebound effect, and UK energy policy.</div>
+    </div>
+    <div class="chat-input-row">
+      <input type="text" id="chat-input" placeholder="Ask a question…" onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="btn-send" id="btn-send" onclick="sendChat()"><i class="ti ti-send"></i> Ask</button>
+    </div>
+  </div>
+</div>
+
+<!-- DIAGRAMS -->
+<div class="panel" id="panel-diagrams">
+  <div class="diag-grid">
+    <div class="diag-card">
+      <div class="diag-title">Supply &amp; demand — equilibrium, tax &amp; DWL</div>
+      <svg id="sd-svg" viewBox="0 0 280 210"></svg>
+      <div class="slider-row">Shift demand <input type="range" min="-40" max="40" value="0" id="sd-shift" oninput="drawSD()"><span class="slider-val" id="sd-sv">0</span></div>
+      <div class="slider-row">Tax <input type="range" min="0" max="40" value="0" id="sd-tax" oninput="drawSD()"><span class="slider-val" id="sd-tv">0</span></div>
+      <div class="diag-legend">
+        <span class="leg-item"><span class="leg-dot" style="background:#378add"></span>Supply</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#d85a30"></span>Demand</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#FAC775;height:10px;width:10px;border-radius:2px"></span>Tax revenue</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#888;height:10px;width:10px;border-radius:2px"></span>DWL</span>
+      </div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-title">Monopoly vs competitive equilibrium</div>
+      <svg id="mono-svg" viewBox="0 0 280 210"></svg>
+      <div class="slider-row">Market power <input type="range" min="0" max="100" value="50" id="mono-sl" oninput="drawMono()"><span class="slider-val" id="mono-v">0.50</span></div>
+      <div class="diag-legend">
+        <span class="leg-item"><span class="leg-dot" style="background:#d85a30"></span>D / MR</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#378add"></span>MC</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#FAC775;height:10px;width:10px;border-radius:2px"></span>Monopoly profit</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#888;height:10px;width:10px;border-radius:2px"></span>DWL</span>
+      </div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-title">Cost curves — AC, MC, AVC</div>
+      <svg id="cost-svg" viewBox="0 0 280 210"></svg>
+      <div class="slider-row">Fixed cost (f) <input type="range" min="5" max="80" value="30" id="fc-sl" oninput="drawCosts()"><span class="slider-val" id="fc-v">30</span></div>
+      <div class="slider-row">Variable cost (c) <input type="range" min="1" max="10" value="3" id="vc-sl" oninput="drawCosts()"><span class="slider-val" id="vc-v">3</span></div>
+      <div class="diag-legend">
+        <span class="leg-item"><span class="leg-dot" style="background:#d85a30"></span>AC</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#378add"></span>MC</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#888"></span>AVC</span>
+      </div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-title">Screening curve — optimal plant mix</div>
+      <svg id="screen-svg" viewBox="0 0 280 210"></svg>
+      <div class="diag-legend">
+        <span class="leg-item"><span class="leg-dot" style="background:#d85a30"></span>Peaking (low FC, high VC)</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#BA7517"></span>Mid-merit</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#378add"></span>Baseload (high FC, low VC)</span>
+      </div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-title">LCOE vs load factor</div>
+      <svg id="lcoe-svg" viewBox="0 0 280 210"></svg>
+      <div class="diag-legend">
+        <span class="leg-item"><span class="leg-dot" style="background:#d85a30"></span>Gas CCGT</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#378add"></span>Offshore wind</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#639922"></span>Onshore wind</span>
+      </div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-title">Cournot reaction functions</div>
+      <svg id="cournot-svg" viewBox="0 0 280 210"></svg>
+      <div class="diag-legend">
+        <span class="leg-item"><span class="leg-dot" style="background:#d85a30"></span>Firm A reaction</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#378add"></span>Firm B reaction</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#639922;height:8px;width:8px;border-radius:50%"></span>Nash equilibrium</span>
+      </div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-title">Merit order / supply stack</div>
+      <svg id="merit-svg" viewBox="0 0 280 210"></svg>
+      <div class="slider-row">Demand level <input type="range" min="10" max="95" value="55" id="merit-sl" oninput="drawMerit()"><span class="slider-val" id="merit-v">55%</span></div>
+      <div class="diag-legend">
+        <span class="leg-item"><span class="leg-dot" style="background:#639922"></span>Renewables</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#BA7517"></span>Nuclear</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#378add"></span>CCGT</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#d85a30"></span>Peaking</span>
+      </div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-title">Contracts for Difference (CfD)</div>
+      <svg id="cfd-svg" viewBox="0 0 280 210"></svg>
+      <div class="diag-legend">
+        <span class="leg-item"><span class="leg-dot" style="background:#378add"></span>Market price</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#d85a30"></span>Strike price</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#FAC775;height:10px;width:10px;border-radius:2px"></span>CfD payment to generator</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#e24b4a;height:10px;width:10px;border-radius:2px"></span>Generator pays back</span>
+      </div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-title">Hotelling Rule — exhaustible resource price path</div>
+      <svg id="hotelling-svg" viewBox="0 0 280 210"></svg>
+      <div class="slider-row">Discount rate r% <input type="range" min="1" max="15" value="5" id="hotelling-sl" oninput="drawHotelling()"><span class="slider-val" id="hotelling-v">5%</span></div>
+      <div class="diag-legend">
+        <span class="leg-item"><span class="leg-dot" style="background:#378add"></span>Price path p₀·(1+r)ᵗ</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#d85a30"></span>Backstop price</span>
+      </div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-title">OPEC cartel payoff matrix</div>
+      <svg id="opec-svg" viewBox="0 0 280 210"></svg>
+      <div class="diag-legend">
+        <span class="leg-item"><span class="leg-dot" style="background:#639922;height:8px;width:8px;border-radius:50%"></span>Nash equilibrium (both high)</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#d85a30;height:8px;width:8px;border-radius:50%"></span>Collusive optimum (both low)</span>
+      </div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-title">Carbon price correction — tax vs quota</div>
+      <svg id="carbon-svg" viewBox="0 0 280 210"></svg>
+      <div class="diag-legend">
+        <span class="leg-item"><span class="leg-dot" style="background:#d85a30"></span>Marginal Social Cost</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#378add"></span>Marginal Private Cost</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#FAC775;height:10px;width:10px;border-radius:2px"></span>Tax (Pigouvian)</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#888;height:10px;width:10px;border-radius:2px"></span>DWL without correction</span>
+      </div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-title">Energy scenarios — backcasting vs forecasting</div>
+      <svg id="scenario-svg" viewBox="0 0 280 210"></svg>
+      <div class="diag-legend">
+        <span class="leg-item"><span class="leg-dot" style="background:#378add"></span>Net Zero pathway (backcasting)</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#d85a30"></span>Current Policies (forecasting)</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#639922"></span>Stated Policies</span>
+      </div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-title">Energy storage — UK capacity growth (GW) & FES scenarios</div>
+      <svg id="storage-svg" viewBox="0 0 280 210"></svg>
+      <div class="diag-legend">
+        <span class="leg-item"><span class="leg-dot" style="background:#378add"></span>Actual UK capacity (MW→GW)</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#d85a30"></span>FES upper bound</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#639922"></span>FES lower bound</span>
+      </div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-title">Rebound effect — direct &amp; indirect</div>
+      <svg id="rebound-svg" viewBox="0 0 280 210"></svg>
+      <div class="diag-legend">
+        <span class="leg-item"><span class="leg-dot" style="background:#d85a30"></span>Expected energy saving</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#378add"></span>Actual saving (after rebound)</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#FAC775;height:10px;width:10px;border-radius:2px"></span>Rebound lost</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="panel" id="panel-quiz">
+  <div class="quiz-header">
+    <span style="font-size:13px;color:var(--color-text-secondary,#666)" id="q-counter">Question 1 of 15</span>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <span class="score-badge" id="score-badge">Score: 0 / 0</span>
+  </div>
+  <div class="q-card" id="q-card"></div>
+</div>
+
+<!-- FLASHCARDS -->
+<div class="panel" id="panel-flash">
+  <div class="fc-controls">
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <span class="fc-counter" id="fc-counter">Card 1 of 1</span>
+      <span class="weak-count" id="weak-count" style="display:none">0 weak cards</span>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn-weak" id="btn-practice-weak" onclick="practiceWeak()" style="display:none"><i class="ti ti-alert-triangle"></i> Practice weak</button>
+      <button class="btn-skip" onclick="shuffleFC()"><i class="ti ti-arrows-shuffle"></i> Shuffle</button>
+      <button class="btn-skip" onclick="restartFC()"><i class="ti ti-refresh"></i> Restart</button>
+    </div>
+  </div>
+  <div class="fc-wrap" onclick="flipCard()" id="fc-wrap">
+    <div class="fc-deck" id="fc-deck">
+      <div class="fc-face fc-front">
+        <div class="fc-label">Term</div>
+        <div class="fc-term" id="fc-term">Loading…</div>
+        <div id="fc-front-svg" class="fc-svg-wrap" style="display:none"></div>
+        <div class="fc-hint">Tap to reveal definition</div>
+      </div>
+      <div class="fc-face fc-back">
+        <div class="fc-label">Definition</div>
+        <div id="fc-back-svg" class="fc-svg-wrap" style="display:none"></div>
+        <div class="fc-def" id="fc-def"></div>
+      </div>
+    </div>
+  </div>
+  <div class="fc-rate" id="fc-rate">
+    <button class="btn-primary" onclick="rateCard(true)">Got it ✓</button>
+    <button class="btn-weak" onclick="rateCard(false)">Needs work ✗</button>
+  </div>
+  <div class="fc-nav">
+    <button class="btn-skip" onclick="prevFC()"><i class="ti ti-arrow-left"></i> Previous</button>
+    <button class="btn-primary" onclick="nextFC()">Next <i class="ti ti-arrow-right"></i></button>
+  </div>
+</div>
+</div>
+
+<script>
+const SYSTEM_PROMPT=`You are a focused revision tutor for the Energy Economics module (University of Birmingham). Answer ONLY questions related to the module content below.
+
+SESSION 1 - UK Energy System:
+- UK energy by sector: Transport 42%, Domestic 27%, Services 16%, Industry 15%
+- UK energy by fuel: Oil 38%, Gas 36%, Primary electricity 12%, Bioenergy 12%, Coal 2%
+- UK production declined sharply post-2000; gas/petroleum peaked ~1999-2000
+- Imports: crude oil from USA 34%, Norway 29%; natural gas 78% Norway pipeline, 17% USA LNG
+- UK electricity 2025: Wind ~30%, Gas ~27%, Nuclear ~12%, Biomass ~9%, Solar ~6%, Imports ~14%, Coal 0%
+- Renewables >50%; offshore wind grew fastest since 2010
+- Energy trilemma: carbon emissions vs energy costs vs security of supply
+- Capital intensive (Hinkley C £24bn+), long lifetimes 40-100+ years, policy dependent
+
+SESSION 2 - Economic Concepts I:
+- Economics (Robbins): human behaviour, scarce means, alternative uses
+- Perfect competition: many firms/consumers, homogeneous product, perfect knowledge, free entry/exit
+- Law of Demand: higher price → lower Qd (income + substitution effects)
+- Law of Supply: higher price → higher Qs
+- Equilibrium: D(p*) = S(p*)
+- PED = %ΔQd / %ΔP; negative; |PED|>1 elastic, <1 inelastic; UK gas PED ≈ -0.1
+- Cross-price elasticity: positive for substitutes, negative for complements
+- Income elasticity: positive for normal goods, negative for inferior goods
+- Consumer surplus = area between demand curve and price; Producer surplus = area between price and supply curve
+- Welfare = CS + PS, maximised at competitive equilibrium (MB=MC)
+- Sales tax: raises consumer price (pC), lowers supplier price (pS), creates DWL triangle
+- Tax incidence: buyer's share = elasticity of supply / (elasticity of supply + |PED|)
+
+SESSION 3 - Economic Concepts II:
+- Fixed cost (FC): doesn't vary with output; Variable cost (VC): varies with output; TC = FC + VC
+- AC = C(Q)/Q; MC = dC/dQ; Sunk costs cannot be recovered
+- C(Q)=f+cQ: AC=f/Q+c, MC=c; C(Q)=f+cQ³: AC=f/Q+cQ², MC=3cQ² (U-shaped)
+- Profit max: MR=MC; in perfect competition MR=P
+- Monopoly: sets MR=MC; P>MC; DWL (Harberger triangle)
+- Example: P=6-Q, C=½Q² → monopoly Q=2, P=4
+- Oligopoly/Cournot: p=29-2(q1+q2), c(qi)=5qi → q1=q2=4, p=21
+- Cobra effect: unintended consequences
+
+SESSION 4 - Investing in Projects:
+- Payback = initial cost / net monthly revenue
+- ARR = average profit per year / average investment × 100
+- PV of £X in t years = X/(1+r)^t
+- NPV = Σ payment_t × (1+r)^{-t}; invest if NPV>0
+- IRR = discount rate where NPV=0; invest if IRR > WACC
+- Hurdle rates: Solar PV 5.0%, Hydro 5.4%, Onshore wind 6.2%, Offshore wind 8.3%, Floating offshore 9.8%, Geothermal 18.8%
+- Higher discount rate favours low-capex high-running-cost (gas) over high-capex low-running-cost (nuclear)
+- LCOE = Σ(TCn/(1+r)^n) / Σ(Gn/(1+r)^n); unit: £/MWh
+- 2025 LCOE: large solar ~£60, onshore wind ~£60, fixed offshore ~£100, floating offshore ~£160 per MWh
+- Gas CCGT: 5% load ~£420/MWh; 30% load ~£130/MWh; 93% load ~£80/MWh
+- Screening curve: peaking = low FC high VC; baseload = high FC low VC
+- Load-duration curve: hours/year demand exceeds a level
+
+SESSION 5 - Electricity Markets I:
+- Four segments: Generation (competitive), Transmission (monopoly), Distribution (monopoly), Supply (competitive)
+- BETTA: 1. Free trade 2. Notify NGC 3. NGC accepts bids/offers 4. Imbalance settlement
+- Gate closure: 1 hour before delivery
+- Dispatch: rank by SRMC; near-zero SRMC renewables first → merit order effect depresses wholesale prices
+- CfD strike prices offshore wind (£2012/MWh): AR1 £115; AR2 £58; AR3 £40; AR4 £37.35; AR6 £54-59; AR7 Jan 2026 £91 (2024 prices), floating £216
+- Capacity market T-4 2023: £63/kW/yr; 68% gas
+
+SESSION 6 - Electricity Markets II:
+- Natural monopoly; rate-of-return (US) vs RPI-X (UK, Littlechild 1983)
+- RIIO = Revenue = Incentives + Innovation + Outputs
+- 1990 Vesting Day: CEGB split; 2001 NETA; 2005 BETTA
+- Smart meter CBA 2019: NPV=£6bn; UK Green Book discount rate: 3.5%
+
+SESSION 7 — Global Energy & Hotelling/OPEC:
+- McKelvey box: Proved (1P, 90%), Probable (2P, 50%), Possible (3P, 10%)
+- OPEC countries hold 72% of proved reserves (2020)
+- R/P ratio ~50 years globally (static depletion measure, not prediction)
+- Hubbert Curve: bell-shaped production curve; US peak 1970
+- Hotelling Rule: price rises at rate r per period; backstop technology caps price
+- Green paradox: future carbon tax may incentivise faster extraction now
+- OPEC prisoners' dilemma: Both low=£50bn, Both high=£10bn, One high/one low=£80bn/£1bn
+- Nash equilibrium: both produce high (£10bn); Grim strategy sustainable if δ > 3/7 ≈ 0.43
+
+SESSION 8 — Global Energy II: Gas, Coal, Market Failure:
+- World gas: US 26%, Russia 14%; Russian pipeline to Europe 195→50 billion m³ (2018→2023)
+- China: 52% of world coal production
+- Global primary energy 2024: Oil 34%, Coal 28%, Gas 25%
+- Externality: actions affect others who don't pay. Social cost = private cost + external cost
+- Stern Review: "market failure on greatest scale the world has seen"
+- Four features of climate change: global; long-term; uncertain; risk of irreversible change
+- Stern discount rate: ~1.4%. UK Green Book: 3.5%
+- Pigou tax = marginal external damage; EU ETS: cap-and-trade; UK ETS post-Brexit
+
+SESSION 9 — Technology Innovation & Carbon Pricing:
+- Learning rate: % reduction in cost for each doubling of cumulative production
+- IRENA (2024) LCOE learning rates 2010-2023: CSP -37%, onshore wind -44%, offshore wind -22%, PV -39%
+- Virtuous spiral: adoption → volume → costs down → more adoption
+- Stern's three solutions: (1) carbon price; (2) technology policy; (3) remove behavioural barriers
+- EU ETS: cap-and-trade; price peaked €100 (Feb 2023), now €60-80
+- UK CBAM planned from 1 Jan 2027
+- World Bank 2025: 28% of global GHG covered by carbon pricing
+
+SESSION 10 — Future Energy Scenarios & New Markets:
+- Scenario typology: backcasting vs forecasting; normative vs descriptive
+- Shell 2025 scenarios: Surge, Archipelagos, Horizon (only Horizon hits net zero by 2050)
+- IEA WEO 2025: CPS (~3°C), STEPS (~2.5°C), NZE (1.5°C pathway)
+- ESO Pathways 2024: Holistic Transition, Electric Engagement, Hydrogen Evolution, Counterfactual
+- REMA: Review of Electricity Market Arrangements; four challenges; government decided 2025 to retain national pricing
+
+SESSION 11 — Energy Storage (New Markets):
+ROLE OF STORAGE:
+- Buffer between production and consumption; can be placed across the system in different forms/scales
+- Functions: balances supply and demand; affects production, consumption, quantities and prices; used to reduce 'system' cost
+- As energy system changes (more variable renewables), role of storage changes
+- "Storage is one of the least sexy words around. That's a problem. By the time a crisis hits, it's too late to start building an extra cupboard" (Tim Harford, FT, 2022)
+
+FLEXIBILITY OPTIONS:
+- Variable renewables increase need for flexibility (must-run and intermittent sources)
+- Options: (1) Flexible plant — Gas CCGT/OCGT default; future: nuclear CCS with flex; (2) Demand side response — smart meters, HPs, EVs; (3) Interconnection — merchant basis, not solely for UK benefit; (4) Energy storage — captures off-peak excess, delivers at peak; doesn't compromise security; no behavioural change from consumers
+- Storage has challenges: cost/performance; acceptance; emerging disruptive technology
+
+EXISTING STORAGE:
+- UK gas storage: ~20,000 GWh total. Stublach (Cheshire): 450m m³ = enough for 300,000 homes/year. Gas network intrinsic storage.
+- Pumped hydro: UK total = 28 GWh_e. Conventional; 95% of global energy storage is PHS
+- Hot water cylinders: 14 million tanks × 6 kWh_th = 84 GWh_th
+- Gas vs electricity peak variability: maximum 3-hour period variation: 16 GW electricity, 116 GW gas
+
+STORAGE TECHNOLOGIES:
+- Pumped Hydro Storage (PHS): water from lower to upper reservoir; release through turbine; 95% of all installed storage worldwide; applications: large-scale renewables integration, spinning/non-spinning reserve, black start
+- New UK PHS: Coire Glas (Scotland) — up to 1,500 MW, >500m elevation, lower reservoir Loch Lochy; Cruachan 2 — 600 MW underground inside Ben Cruachan, site capacity → 1 GW
+- Gravitational Potential Energy Storage (GPES): raises mass (trains, weights, underground shafts); many proposals, no working demos; "gravity is weak" — 1 tonne raised 100m = 1 MJ = only 0.3 kWh
+- Calculation: PE = mgh = 1000 × 10 × 100 = 1 MJ = 10⁶/3600 Wh = 0.278 kWh. Compare: AA battery 3 Wh, phone 10 Wh, EV 50-100 kWh
+- Li-ion batteries: driven down by automotive sector; flexible; 2-4 hour storage; short-term reserve and frequency response
+- Other technologies: flow batteries, CAES (compressed air), Liquid Air Energy Storage (LAES), sodium sulphur, supercapacitors, flywheels, hydrogen & fuel cells, thermal
+
+FES ENERGY STORAGE SCENARIOS:
+- FES 2017: 10 GW by 2050
+- FES 2018: 10-30 GW by 2050
+- FES 2019: 15-30 GW
+- FES 2020: 20-40 GW
+- FES 2022: 22-52 GW
+- FES 2024: 30-52 GW; electricity storage necessary across ALL net-zero pathways
+- FES 2024 quote: "Different durations of energy storage offer different benefits. Two to four-hour storage can meet short variations in demand and supply, provide short-term reserve and help manage the network. Long-duration storage can help secure the system over longer periods of high or low renewable generation output."
+
+BATTERY STORAGE UK GROWTH:
+- UK operational storage capacity: ~25 MW (2016) → ~500 MW (2018) → ~2,500 MW (2024)
+- Batteries benefitted from capacity market and frequency response markets; costs driven down by automotive sector
+- No 'market pull' for medium-long duration: arbitrage value too low to incentivise
+
+MARKETS AND POLICY FOR STORAGE:
+- Barriers: technology cost/performance; uncertainty of value; multiple revenue stream difficulty; true value not reflected in price; regulatory restrictions (owning levies twice); societal acceptance
+- System value: high flexibility scenario is ~£10bn lower annual system cost vs low flexibility (2050, UK govt 2021)
+- Revenue stacking (McKinsey): wholesale market arbitrage 20-50% today, rising to >60% by 2030; ancillary services 50-80% today, declining to <40% by 2030; capacity payments 20-30% in selected geographies
+- Capacity Market T-4 2025: clearing price £60/kW/yr; 4.1% (1.8 GW) battery storage; 3.8% (1.6 GW) PHS; 0.1% (31 MW) CAES; 63% gas
+- Ancillary services (NESO): Frequency Response (Static Firm, Dynamic DC/DM/DR, Mandatory MFR); Reserve (Short-term Operating Reserve, Balancing, Quick); Stability markets; Voltage services; Restoration
+- Aggregators: intermediate between plant owners and system actors (e.g. Good Energy, Kiwi Power)
+- Consumer 'behind the meter': time-of-use tariffs, Octopus Agile tariff, spot market arbitrage
+- Germany domestic storage: 300,000 home battery systems (2020); 70% of European home batteries; KfW low-interest loans; time-of-use tariffs; regulatory changes
+
+TESLA POWERWALL / DOMESTIC STORAGE ECONOMICS:
+- Powerwall: 13.5 kWh, 90% efficient, 114 kg; equipment + installation ~£10,000
+- Electricity cost ~30p/kWh → Powerwall holds £4.50 of electricity
+- If charging from own PV (treating as free) and cycling daily: payback ~7 years
+- Limitations: costs/benefits not discounted; PV electricity not truly free; may not have enough demand at peak times
+- NPV likely negative even with favourable assumptions
+
+LONG-DURATION ENERGY STORAGE (LDES) POLICY:
+- REMA: "new markets may need to be introduced... bring forward long duration storage"
+- DESNZ consultation on cap and floor mechanism for LDES
+- Cap and floor: revenue floor if wholesale revenues too low; cap if revenues too high → reduces investment risk
+- DESNZ 'Longer Duration Energy Storage Demonstration' competition: £37m for 3 actual demos; £30m for 3 prototype demos
+- Grid-scale battery storage found pathways to market without ES-specific incentives
+- Other storage types not yet commercially viable — problem if different types offer different benefits
+
+IN THE NEWS (Session 11):
+- High energy prices threaten UK manufacturing (Guardian 23/2/26): CBI report 40% of firms cut investment; electricity costs far above pre-Ukraine levels
+- Food producers alarm on energy standing charges (Guardian 22/2/26): April price jump will hinder competitiveness
+- British Industry Supercharger (2024): exempt eligible firms from renewable policy costs; 60% reduction in network charges
+- UK non-domestic electricity prices highest in EU14 at 26.70p/kWh (Jan-Jun 2025); falling 3% since last semester
+- UK non-domestic gas price 4.82p/kWh, 5th cheapest in EU14+UK
+- Britishvolt: went into administration Jan 2023; bought by Recharge Industries Feb 2023; plans collapsed Apr 2024
+
+SESSION 12 — Energy Demand & Policy, Conclusions:
+IMPORTANCE OF ENERGY DEMAND/EFFICIENCY:
+- Energy efficiency described as "an epic failure in most nations' energy policy" (Fatih Birol, IEA)
+- IEA WEO 2019: efficiency improvements responsible for 60% of savings in Sustainable Development Scenario vs STEPS. Nearly half come from industry; major contributions from transport and buildings
+- IEA WEO 2024: efficiency improvements needed to double their pace; technical efficiency and fuel switching are biggest levers 2023-2030; doubling efficiency would: reduce bills, alleviate fuel poverty, create ~5 million jobs, contribute half of emissions reductions needed by 2030
+- Energy intensity improvements 2022-23 fell "far short" of what is needed to double energy efficiency by 2030
+- Barriers to energy efficiency: financial (access to capital); hidden costs (transaction costs); lack of information; risks/uncertainties; poorly aligned incentives — landlord/tenant split incentive (landlord pays cost, tenant gets benefit of lower bills)
+
+UK ENERGY EFFICIENCY POLICY:
+- EU 20-20-20 targets (2009 package): 20% emissions reduction; 20% renewables share; 20% energy efficiency improvement by 2020. EEA: broadly achieved (with COVID boost)
+- UK Electricity Demand Reduction Pilot (2016): part of EMR; 23.3 MW purchased at £203/kW; mostly lighting e.g. Sainsbury's
+- Demand Flexibility Service (DFS, 2022/23): incentivise consumers to reduce consumption at specific times; first event 23 Jan 2023: 323-336 MW; British Gas PeakSave: £1.8m paid to customers (~£28.56/customer); 147 MWh saved; total 3.3 GWh saved in DFS
+- DFS challenges: incentives generally low; financially struggling households found it harder; fairness issues (higher flexible demand households earn more)
+- DFS benefits cited by participants: satisfaction of managing challenge (42%); rewards (39%); being part of national collective effort (38%); 'feel-good factor' around carbon reduction
+- MACC for UK residential sector (CCC): cheapest abatement options include hot water tank insulation, cavity wall insulation, draught proofing, loft insulation; expensive: solid wall insulation, solar water heating, PV
+- Payback periods: hot water tank insulation shortest; double glazing from band G moderate; solid wall insulation very long (>100 years at 2022 prices, reduced under 6th Carbon Budget price scenario)
+
+UK POLICY FAILURES:
+- Green Deal (2013): market mechanism; loans attached to building; golden rule (savings cover repayments); loan rate 6.96%; low take-up; axed 2015
+- Green Homes Grant (2020): vouchers up to £5,000; very few issued; EAC (Mar 2021): "Net Zero impossible unless urgent action on energy efficiency"
+- Letter from Lord Deben (CCC) to Chancellor Hunt (Nov 2022): a decade ago 2.3 million efficiency measures installed annually; in 2021 fewer than 100,000. "Reducing energy demand in UK buildings is now the biggest gap in current Government energy policy."
+- Green Deal critique: dependent on loan rate and predicted savings which may not transpire
+
+STATED UK POLICY:
+- Future Homes Standard: new homes to have low-carbon heating (heat pumps), high insulation, rooftop solar; proposed changes published June 2025; NOT yet published as of Feb 2026 — accused of caving in to building lobby
+- Boiler Upgrade Scheme: £7,500 toward air source heat pump; £205m over 3 years (= ~90,000 upgrades vs target 600,000 HPs/year by 2028); 23,000 grants in 2024
+- ECO+ scheme: poorest households and least efficient homes in lower council tax bands
+- Household energy bills to fall 7% April 2026 (Ofgem): ECO scheme scrapped, moved to general taxation; but network costs rising ~£6/month
+
+DR RADCLIFFE'S HEAT PUMP CALCULATION (worked example):
+- Energy bills 2025: gas (14,750 kWh) = £990; electricity (2,340 kWh) = £830
+- Heat Geek quote: £13,700 all-in (includes £7,500 BUS grant), annual savings £600 at 400% efficiency (COP=4)
+- DCF analysis: DR=5%, annual cashflow £600; NPV over 20 years = -£5,926
+- Carbon: emission factor 0.183 kgCO2e/kWh; total CO2 avoided over 20 years = 53,985 kg; MAC = £249/tCO2
+- Conclusion: negative NPV even with £7,500 grant; financial case weak at current electricity-to-gas price ratio
+
+THE REBOUND EFFECT:
+- Direct rebound effect: efficiency makes energy services cheaper → consumption increases → offsets savings (ceteris paribus)
+- Indirect rebound effect: money saved spent on other energy-intensive goods/services
+- Economy-wide rebound: direct + indirect across whole economy
+- Evidence: direct rebound ~10-30%; economy-wide could be >50% in some sectors
+- Khazzoom-Brookes (K-B) postulate: if energy prices don't change, cost-effective efficiency improvements will INCREASE economy-wide energy consumption ('backfire') — follows Jevons Paradox
+- Jevons Paradox (1865): more efficient steam engines → more total coal consumption
+- Brockway & Sorrell (2021): rebound "may erode more than half of the potential energy savings from improved energy efficiency"; >2/3 of studies found rebound effects >50%; six studies found effects ≥100% (backfire)
+- Models may underestimate future energy demand because rebound effects not adequately included
+- Implication: if efficiency savings smaller than anticipated, world may need to rely more on low-carbon supply, CCS, negative emissions technologies
+- Economy-wide carbon pricing can mitigate rebound and increase actual energy savings
+- Randomised trial (Michigan weatherisation): aggressive encouragement raised take-up from <1% to ~6%; reduced energy consumption 10-20%; BUT projected savings 2.5× actual savings; upfront costs ~2× value of realised savings; no evidence of temperature increase (houses not heated more); social IRR = -9.5%; CO2 cost = $329/ton
+
+BEHAVIOURAL ECONOMICS:
+- Analyzes how people make choices with 'bounded rationality' — decision-making constrained by time, information, cognitive limits
+- After 'Nudge' (Thaler & Sunstein, 2008): subtle interventions encourage better choices
+- Nick Chater (ex-UK Behavioural Insights Team): limits of nudges — people comfortable with status quo, small changes insufficient for deep decarbonisation
+- Carbon footprint as concept: BP popularised it (2004 campaign) — shifts focus from systemic to individual. Debate: does individual focus distract from bigger systemic issues?
+- TED talk David Cameron (Feb 2010): "you can achieve more social change by talking to people's values than by talking to their wallets"
+
+UK ENERGY POLICY LANDSCAPE:
+- DESNZ (Department for Energy Security & Net Zero): responsible for energy security, protecting billpayers, reaching net zero
+- Secretary of State: Rt Hon Ed Miliband MP
+- Six DESNZ priorities (2026): (1) clean power by 2030/accelerate to net zero; (2) British jobs, supply chains, Great British Energy; (3) Warm Homes Plan; (4) fairer deal for consumers; (5) just and orderly transition from fossil fuels; (6) leading fight against climate change
+- National policy timeline: 2019 net zero by 2050 legislated; 2020 PM's 10 Point Plan; 2021 Net Zero Strategy + 6th Carbon Budget (78% by 2035); 2022 Energy Security Strategy; 2024 Clean Power 2030; 2025 Modern Industrial Strategy; 2026 Fuel Poverty Strategy
+- Clean Power 2030: aim for clean power to meet 100% of electricity demand; ≥95% from low-carbon; ≤5% unabated gas; described as "huge challenge but achievable" (NESO)
+- CCC 7th Carbon Budget: 535 MtCO2e for 2038-2042; electrification + low-carbon electricity = 60% of reductions by 2040; roll-out rates for EVs, heat pumps, renewables similar to mobile phones, refrigerators, internet
+
+UN SUSTAINABLE DEVELOPMENT GOALS:
+- 17 SDGs adopted by all UN member states in 2015 (2030 Agenda)
+- Goal 7: Affordable and clean energy; global electricity access reached 92% in 2023 (up from 84% in 2010)
+- Clean cooking: 64→74% between 2015-2023
+- Renewables projected to surpass coal as primary electricity source in 2025
+- Without accelerated action: 645 million still lack electricity; 1.8 billion lack clean cooking by 2030
+
+CONCLUSIONS (Session 12):
+- "For the economist: world is open field, factors of production and consumption goods recombined in response to prices and marginal productivities" (Birol & Keppler, 2000)
+- "For the engineer: world consists of set of given technologies or activities which determine demand with fixed relative shares"
+- "Balance between economic and technology-based policy approaches has to be sought"
+- "Science reveals the nature of the dangers... Economics offers a framework that can help policy-makers decide how much action to take and with what policy instruments" (Stern, 2007)
+- Energy efficiency ≠ energy demand reduction (rebound effect)
+- Markets need to be designed to reflect whole-system value of storage and flexibility
+
+Answer in 150-250 words. Use formulas where relevant. Relate to energy examples.`;
+
+let xp=0,streak=0,level=1;
+function addXP(n){xp+=n;level=Math.floor(xp/50)+1;document.getElementById('xp-num').textContent=xp;document.getElementById('level-num').textContent=level;document.getElementById('xp-bar').style.width=Math.round((xp%50)/50*100)+'%';}
+function updStreak(ok){streak=ok?streak+1:0;document.getElementById('streak-num').textContent=streak;}
+
+function switchTab(t,el){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-'+t).classList.add('active');
+  if(t==='quiz'&&quizDeck.length===0)startQuiz();
+  if(t==='flash'&&fcDeck.length===0){fcDeck=[...FLASHCARDS];renderFC();}
+  if(t==='diagrams'){setTimeout(()=>{drawSD();drawMono();drawCosts();drawScreening();drawLCOE();drawCournot();drawMerit();drawCFD();drawHotelling();drawOPEC();drawCarbon();drawScenario();drawStorage();drawRebound();},50);}
+}
+
+let chatHist=[];
+function askSug(el){document.getElementById('chat-input').value=el.textContent;sendChat();}
+async function sendChat(){
+  const inp=document.getElementById('chat-input');const q=inp.value.trim();if(!q)return;
+  inp.value='';document.getElementById('btn-send').disabled=true;
+  appendMsg('user',q);chatHist.push({role:'user',content:q});
+  const th=appendMsg('ai','Thinking…',true);
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYSTEM_PROMPT,messages:chatHist})});
+    const d=await r.json();
+    const reply=d.content?.filter(b=>b.type==='text').map(b=>b.text).join('')||'Sorry, no response.';
+    th.remove();appendMsg('ai',reply);chatHist.push({role:'assistant',content:reply});addXP(2);
+  }catch(e){th.remove();appendMsg('ai','Connection error — please try again.');}
+  document.getElementById('btn-send').disabled=false;
+}
+function appendMsg(role,text,thinking=false){
+  const d=document.createElement('div');d.className='msg '+role+(thinking?' thinking':'');d.textContent=text;
+  const c=document.getElementById('chat-msgs');c.appendChild(d);c.scrollTop=c.scrollHeight;return d;
+}
+
+const PAD={l:38,r:16,t:16,b:30};
+function ln(x1,y1,x2,y2,col,w=1.5,dash=''){return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="${w}"${dash?' stroke-dasharray="'+dash+'"':''}/>` }
+function tx(x,y,s,anchor='middle',sz=10,col='var(--color-text-secondary,#888)'){return `<text x="${x}" y="${y}" text-anchor="${anchor}" font-size="${sz}" fill="${col}">${s}</text>`}
+function poly(pts,fill,op=0.3){return `<polygon points="${pts.map(p=>p[0]+','+p[1]).join(' ')}" fill="${fill}" fill-opacity="${op}" stroke="none"/>`}
+
+function drawSD(){
+  const W=280,H=210,{l,r,t,b}=PAD,iW=W-l-r,iH=H-t-b;
+  const shift=parseInt(document.getElementById('sd-shift').value);
+  const tax=parseInt(document.getElementById('sd-tax').value);
+  document.getElementById('sd-sv').textContent=shift>0?'+'+shift:shift;
+  document.getElementById('sd-tv').textContent=tax;
+  const sN=shift/100,tN=tax/100;
+  function toX(q){return l+q*iW;}function toY(p){return t+(1-p)*iH;}
+  const qEq=Math.min(0.93,Math.max(0.07,(1+sN)/2));const pEq=qEq;
+  const qT=Math.min(0.93,Math.max(0.07,(1+sN-tN)/2));const pC=qT+tN;const pS=qT;
+  let s='';
+  s+=ln(toX(0),toY(0),toX(1),toY(1),'#378add',2);
+  s+=ln(toX(0),toY(1+sN),toX(Math.min(1,1+sN)),toY(Math.max(0,sN)),'#d85a30',2);
+  s+=tx(toX(0.96),toY(0.08),'S','middle',11,'#378add');
+  s+=tx(toX(0.85),toY(sN+0.08),'D','middle',11,'#d85a30');
+  if(tax>0){
+    s+=ln(toX(0),toY(tN),toX(Math.min(1,1+tN)),toY(1),'#378add',1.5,'4 3');
+    s+=tx(toX(0.55),toY(0.94),'S(p−t)','middle',9,'#378add');
+    s+=poly([[toX(qT),toY(pC)],[toX(qT),toY(pS)],[toX(qEq),toY(pEq)]],'#888');
+    s+=poly([[toX(0),toY(pC)],[toX(qT),toY(pC)],[toX(qT),toY(pS)],[toX(0),toY(pS)]],'#FAC775',0.55);
+    s+=poly([[toX(0),toY(1+sN)],[toX(qT),toY(1+sN)],[toX(qT),toY(pC)]],'#d85a30',0.2);
+    s+=poly([[toX(0),toY(pS)],[toX(qT),toY(pS)],[toX(qT),toY(0)],[toX(0),toY(0)]],'#378add',0.15);
+    s+=ln(toX(qT),toY(pC),toX(0),toY(pC),'#888',0.8,'2 2');
+    s+=ln(toX(qT),toY(pS),toX(0),toY(pS),'#888',0.8,'2 2');
+    s+=ln(toX(qT),toY(0),toX(qT),toY(pC),'#888',0.8,'2 2');
+    s+=tx(l+2,toY(pC)+3,'pC','start',9,'#d85a30');
+    s+=tx(l+2,toY(pS)+3,'pS','start',9,'#378add');
+    s+=tx(toX(qT),toY(0)-3,'q*','middle',9,'#888');
+  }else{
+    s+=poly([[toX(0),toY(1+sN)],[toX(qEq),toY(pEq)],[toX(0),toY(pEq)]],'#d85a30',0.22);
+    s+=poly([[toX(0),toY(0)],[toX(qEq),toY(qEq)],[toX(0),toY(pEq)]],'#378add',0.18);
+    s+=ln(toX(qEq),t,toX(qEq),toY(pEq),'#888',0.8,'2 2');
+    s+=ln(l,toY(pEq),toX(qEq),toY(pEq),'#888',0.8,'2 2');
+    s+=tx(l+3,toY(pEq)+3,'p*','start',9,'var(--color-text-primary,#333)');
+    s+=tx(toX(qEq),toY(0)-3,'q*','middle',9,'var(--color-text-primary,#333)');
+    s+=tx(toX(0.06),toY(1+sN-0.1),'CS','middle',10,'#d85a30');
+    s+=tx(toX(0.06),toY(pEq/2+0.05),'PS','middle',10,'#378add');
+  }
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'Quantity')+tx(l-6,t+5,'P');
+  document.getElementById('sd-svg').innerHTML=s;
+}
+
+function drawMono(){
+  const W=280,H=210,{l,r,t,b}=PAD,iW=W-l-r,iH=H-t-b;
+  const mp=parseInt(document.getElementById('mono-sl').value)/100;
+  document.getElementById('mono-v').textContent=mp.toFixed(2);
+  function toX(q){return l+q*iW;}function toY(p){return t+(1-p)*iH;}
+  const qM=0.4,pM=0.6,qC=0.8,pMC=0.2;
+  const qD=qM+(qC-qM)*(1-mp);const pD=pM+(pMC-pM)*(1-mp);
+  let s='';
+  s+=ln(toX(0),toY(1),toX(1),toY(0),'#d85a30',2);
+  s+=ln(toX(0),toY(1),toX(0.5),toY(0),'#d85a30',1.5,'3 2');
+  s+=ln(toX(0),toY(pMC),toX(1),toY(pMC),'#378add',2);
+  s+=tx(toX(0.93),toY(0.06),'D','middle',11,'#d85a30');
+  s+=tx(toX(0.43),toY(0.04),'MR','middle',9,'#d85a30');
+  s+=tx(toX(0.94),toY(pMC+0.04),'MC','middle',9,'#378add');
+  if(mp>0.05){
+    s+=poly([[toX(0),toY(pD)],[toX(qD),toY(pD)],[toX(qD),toY(pMC)],[toX(0),toY(pMC)]],'#FAC775',0.5);
+    s+=poly([[toX(qD),toY(pD)],[toX(qD),toY(pMC)],[toX(qC),toY(pMC)]],'#888',0.3);
+    s+=ln(toX(qD),t,toX(qD),toY(pD),'#888',0.8,'2 2');
+    s+=ln(l,toY(pD),toX(qD),toY(pD),'#888',0.8,'2 2');
+    s+=tx(l+2,toY(pD)+3,'pm','start',9,'var(--color-text-primary,#333)');
+    s+=tx(toX(qD),toY(0.03),'qm','middle',9,'var(--color-text-primary,#333)');
+    s+=tx(toX(0.05),toY((pD+pMC)/2),'π','middle',12,'#854F0B');
+    s+=tx(toX(qD+0.06),toY(pMC+0.09),'DWL','start',9,'#888');
+  }
+  s+=ln(toX(qC),t,toX(qC),toY(pMC),'#888',0.8,'2 2');
+  s+=ln(l,toY(pMC),toX(qC),toY(pMC),'#888',0.8,'2 2');
+  s+=tx(l+2,toY(pMC)+3,'p*','start',9,'#378add');
+  s+=tx(toX(qC),toY(0.03),'q*','middle',9,'#378add');
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'Quantity')+tx(l-6,t+5,'P');
+  document.getElementById('mono-svg').innerHTML=s;
+}
+
+function drawCosts(){
+  const W=280,H=210,{l,r,t,b}=PAD,iW=W-l-r,iH=H-t-b;
+  const fc=parseInt(document.getElementById('fc-sl').value);
+  const cRaw=parseInt(document.getElementById('vc-sl').value);
+  document.getElementById('fc-v').textContent=fc;
+  document.getElementById('vc-v').textContent=cRaw;
+  const c=cRaw/1000;const maxQ=60;
+  let maxCost=0;
+  for(let q=1;q<=maxQ;q++){const ac=fc/q+c*q*q;if(ac>maxCost)maxCost=ac;}
+  maxCost=Math.min(maxCost,300);
+  function toX(q){return l+(q/maxQ)*iW;}function toY(cost){return t+(1-Math.min(1,cost/maxCost))*iH;}
+  const acPts=[],mcPts=[],avcPts=[];
+  for(let q=1;q<=maxQ;q++){
+    acPts.push(toX(q)+','+toY(fc/q+c*q*q));
+    mcPts.push(toX(q)+','+toY(3*c*q*q));
+    avcPts.push(toX(q)+','+toY(c*q*q));
+  }
+  const mesQ=Math.pow(fc/(2*c),1/3);const mesAC=fc/mesQ+c*mesQ*mesQ;
+  let s='';
+  s+=`<polyline points="${avcPts.join(' ')}" fill="none" stroke="#888" stroke-width="1.5" stroke-dasharray="3 2"/>`;
+  s+=`<polyline points="${acPts.join(' ')}" fill="none" stroke="#d85a30" stroke-width="2"/>`;
+  s+=`<polyline points="${mcPts.join(' ')}" fill="none" stroke="#378add" stroke-width="2"/>`;
+  if(mesQ>=1&&mesQ<=maxQ&&mesAC<=maxCost){
+    s+=`<circle cx="${toX(mesQ)}" cy="${toY(mesAC)}" r="4" fill="#d85a30" fill-opacity="0.8"/>`;
+    s+=tx(toX(mesQ)+6,toY(mesAC),'MES','start',9,'#d85a30');
+  }
+  const mi=Math.floor(acPts.length*0.65);
+  const acMid=acPts[mi].split(',');const mcMid=mcPts[Math.floor(mcPts.length*0.75)].split(',');const avcMid=avcPts[Math.floor(avcPts.length*0.45)].split(',');
+  s+=tx(+acMid[0]+5,+acMid[1],'AC','start',10,'#d85a30');
+  s+=tx(+mcMid[0]+5,+mcMid[1],'MC','start',10,'#378add');
+  s+=tx(+avcMid[0]+5,+avcMid[1],'AVC','start',9,'#888');
+  [0.25,0.5,0.75,1].forEach(f=>{const v=Math.round(maxCost*f);s+=tx(l-3,toY(maxCost*f)+3,v,'end',8);});
+  [20,40,60].forEach(q=>{s+=tx(toX(q),H-b+12,q,'middle',8);});
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'Output Q')+tx(l-6,t+5,'£');
+  document.getElementById('cost-svg').innerHTML=s;
+}
+
+function drawScreening(){
+  const W=280,H=210,{l,r,t,b}=PAD,iW=W-l-r,iH=H-t-b;
+  const maxX=100,maxY=200;
+  function toX(x){return l+(x/maxX)*iW;}function toY(y){return t+(1-y/maxY)*iH;}
+  const lines=[
+    {fc:20,vc:1.2,col:'#d85a30',lbl:'Peaking'},
+    {fc:60,vc:0.7,col:'#BA7517',lbl:'Mid-merit'},
+    {fc:100,vc:0.3,col:'#378add',lbl:'Baseload'}
+  ];
+  let s='';
+  s+=poly([[toX(0),toY(0)],[toX(80),toY(0)],[toX(80),toY(maxY)],[toX(0),toY(maxY)]],'#d85a30',0.06);
+  s+=poly([[toX(80),toY(0)],[toX(100),toY(0)],[toX(100),toY(maxY)],[toX(80),toY(maxY)]],'#378add',0.06);
+  lines.forEach(l2=>{
+    const y1=Math.min(maxY,l2.fc+l2.vc*maxX);
+    const x1eff=y1>=maxY?(maxY-l2.fc)/l2.vc:maxX;
+    s+=ln(toX(0),toY(l2.fc),toX(x1eff),toY(Math.min(maxY,l2.fc+l2.vc*x1eff)),l2.col,2);
+    s+=tx(toX(Math.min(x1eff,maxX)-1),toY(Math.min(maxY,l2.fc+l2.vc*Math.min(x1eff,maxX)))+12,l2.lbl,'end',9,l2.col);
+  });
+  s+=ln(toX(80),t,toX(80),H-b,'#888',0.8,'3 2');
+  s+=tx(toX(40),t+12,'Peaking','middle',9,'#d85a30');
+  s+=tx(toX(90),t+12,'Base','middle',8,'#378add');
+  [50,100,150,200].forEach(v=>{s+=tx(l-3,toY(v)+3,v,'end',8);});
+  s+=tx(toX(0),H-b+12,'0','middle',8)+tx(toX(50),H-b+12,'50','middle',8)+tx(toX(100),H-b+12,'100','middle',8);
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'Utilisation (arb. units)')+tx(l-6,t+5,'£/kW');
+  document.getElementById('screen-svg').innerHTML=s;
+}
+
+function drawLCOE(){
+  const W=280,H=210,{l,r,t,b}=PAD,iW=W-l-r,iH=H-t-b;
+  const maxLCOE=500;
+  function toX(lf){return l+lf*iW;}function toY(v){return t+(1-Math.min(1,v/maxLCOE))*iH;}
+  const gas=[],off=[],on=[];
+  for(let lf=0.05;lf<=1.0;lf+=0.01){
+    gas.push(toX(lf)+','+toY(70/lf+40));
+    off.push(toX(lf)+','+toY(100/lf+5));
+    on.push(toX(lf)+','+toY(60/lf+3));
+  }
+  let s='';
+  s+=`<polyline points="${on.join(' ')}" fill="none" stroke="#639922" stroke-width="1.8"/>`;
+  s+=`<polyline points="${off.join(' ')}" fill="none" stroke="#378add" stroke-width="1.8"/>`;
+  s+=`<polyline points="${gas.join(' ')}" fill="none" stroke="#d85a30" stroke-width="1.8"/>`;
+  s+=`<circle cx="${toX(0.4)}" cy="${toY(100/0.4+5)}" r="4" fill="#378add"/>`;
+  s+=tx(toX(0.4)+6,toY(100/0.4+5),'Offshore ~40%','start',8,'#378add');
+  s+=`<circle cx="${toX(0.35)}" cy="${toY(60/0.35+3)}" r="4" fill="#639922"/>`;
+  s+=tx(toX(0.35)+6,toY(60/0.35+3),'Onshore ~35%','start',8,'#639922');
+  s+=`<circle cx="${toX(0.85)}" cy="${toY(70/0.85+40)}" r="4" fill="#d85a30"/>`;
+  s+=tx(toX(0.85)-6,toY(70/0.85+40)-6,'Gas ~85%','end',8,'#d85a30');
+  s+=tx(toX(0.97),toY(70/0.97+40)+3,'Gas','end',9,'#d85a30');
+  s+=tx(toX(0.97),toY(100/0.97+5)+3,'Off.','end',9,'#378add');
+  s+=tx(toX(0.97),toY(60/0.97+3)+3,'On.','end',9,'#639922');
+  [100,200,300,400].forEach(v=>{s+=tx(l-3,toY(v)+3,v,'end',8);s+=ln(l,toY(v),l+3,toY(v),'#888',0.8);});
+  [0.25,0.5,0.75,1].forEach(v=>{s+=tx(toX(v),H-b+12,(v*100).toFixed(0)+'%','middle',8);});
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'Load factor')+tx(l-6,t+5,'£/MWh');
+  document.getElementById('lcoe-svg').innerHTML=s;
+}
+
+function drawCournot(){
+  const W=280,H=210,{l,r,t,b}=PAD,iW=W-l-r,iH=H-t-b;
+  const maxQ=12;
+  function toX(q1){return l+(q1/maxQ)*iW;}function toY(q2){return t+(1-q2/maxQ)*iH;}
+  let s='';
+  s+=poly([[toX(0),toY(12)],[toX(6),toY(0)],[toX(0),toY(0)]],'#d85a30',0.06);
+  s+=ln(toX(6),toY(0),toX(0),toY(12),'#d85a30',2);
+  s+=ln(toX(0),toY(6),toX(12),toY(0),'#378add',2);
+  s+=`<circle cx="${toX(4)}" cy="${toY(4)}" r="5" fill="#639922"/>`;
+  s+=tx(toX(4)+8,toY(4)-5,'Nash (4,4)','start',9,'#3b6d11');
+  s+=ln(toX(4),toY(4),toX(4),H-b,'#888',0.8,'2 2');
+  s+=ln(toX(4),toY(4),l,toY(4),'#888',0.8,'2 2');
+  s+=tx(toX(4),H-b+12,'4','middle',9);s+=tx(l-5,toY(4)+3,'4','end',9);
+  s+=tx(toX(1),toY(11.5),'RF(A)','middle',9,'#d85a30');
+  s+=tx(toX(10),toY(1),'RF(B)','middle',9,'#378add');
+  s+=tx(toX(6),H-b+12,'6','middle',8);s+=tx(toX(12),H-b+12,'12','middle',8);
+  s+=tx(l-5,toY(6)+3,'6','end',8);s+=tx(l-5,toY(12)+3,'12','end',8);
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'Firm A output q₁')+tx(l-6,t+5,'q₂');
+  document.getElementById('cournot-svg').innerHTML=s;
+}
+
+function drawMerit(){
+  const W=280,H=210,{l,r,t,b}=PAD,iW=W-l-r,iH=H-t-b;
+  const demand=parseInt(document.getElementById('merit-sl').value)/100;
+  document.getElementById('merit-v').textContent=Math.round(demand*100)+'%';
+  const segments=[
+    {from:0,to:0.30,srmc:5,col:'#639922',lbl:'Renew.'},
+    {from:0.30,to:0.45,srmc:20,col:'#BA7517',lbl:'Nuclear'},
+    {from:0.45,to:0.75,srmc:60,col:'#378add',lbl:'CCGT'},
+    {from:0.75,to:1.0,srmc:120,col:'#d85a30',lbl:'Peaking'}
+  ];
+  const maxSRMC=140;
+  function toX(q){return l+q*iW;}function toY(p){return t+(1-p/maxSRMC)*iH;}
+  let s='';
+  segments.forEach(seg=>{
+    const x1=toX(seg.from),x2=toX(seg.to);
+    const y1=toY(seg.srmc),yBase=toY(0);
+    s+=`<rect x="${x1}" y="${y1}" width="${x2-x1}" height="${yBase-y1}" fill="${seg.col}" fill-opacity="0.7" stroke="#fff" stroke-width="0.5"/>`;
+    if((seg.to-seg.from)>0.1)s+=tx((x1+x2)/2,(y1+yBase)/2+4,seg.lbl,'middle',9,'#fff');
+  });
+  const dX=toX(demand);
+  s+=ln(dX,t,dX,H-b,'#1a1a1a',2,'4 2');
+  s+=tx(dX+4,t+14,'D','start',10,'#1a1a1a');
+  let clearP=5;
+  segments.forEach(seg=>{if(demand>=seg.from)clearP=seg.srmc;});
+  const clearY=toY(clearP);
+  s+=ln(l,clearY,W-PAD.r,clearY,'#1a1a1a',1.2,'3 2');
+  s+=tx(W-PAD.r,clearY-3,'£'+clearP,'end',9,'#1a1a1a');
+  [20,60,120].forEach(v=>{s+=tx(l-3,toY(v)+3,v,'end',8);});
+  [0.25,0.5,0.75,1].forEach(v=>{s+=tx(toX(v),H-b+12,(v*100).toFixed(0)+'%','middle',8);});
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'Capacity (% of total)')+tx(l-6,t+5,'SRMC (£/MWh)');
+  document.getElementById('merit-svg').innerHTML=s;
+}
+
+function drawCFD(){
+  const W=280,H=210,{l,r,t,b}=PAD,iW=W-l-r,iH=H-t-b;
+  function toX(i,n){return l+(i/n)*iW;}function toY(p){return t+(1-p)*iH;}
+  const n=60;const strike=0.65;
+  const mktPts=[];
+  for(let i=0;i<=n;i++){
+    const t2=i/n;
+    let p=0.45+0.1*Math.sin(t2*Math.PI*5)+0.05*Math.sin(t2*Math.PI*11);
+    if(i>48&&i<54)p=0.85+0.1*(i-48)/6;
+    if(i>=54)p=0.85-0.15*(i-54)/6;
+    mktPts.push({x:toX(i,n),y:toY(Math.max(0,Math.min(1,p))),p:p});
+  }
+  let s='';
+  s+=ln(l,toY(strike),W-PAD.r,toY(strike),'#d85a30',1.8,'5 3');
+  s+=tx(W-PAD.r,toY(strike)-4,'Strike','end',9,'#d85a30');
+  for(let i=0;i<n;i++){
+    if(mktPts[i].p<strike&&mktPts[i+1].p<strike){
+      const x1=mktPts[i].x,x2=mktPts[i+1].x,y1m=mktPts[i].y,y2m=mktPts[i+1].y,ys=toY(strike);
+      s+=`<polygon points="${x1},${ys} ${x2},${ys} ${x2},${y2m} ${x1},${y1m}" fill="#FAC775" fill-opacity="0.5"/>`;
+    }
+    if(mktPts[i].p>strike&&mktPts[i+1]&&mktPts[i+1].p>strike){
+      const x1=mktPts[i].x,x2=mktPts[i+1].x,y1m=mktPts[i].y,y2m=mktPts[i+1].y,ys=toY(strike);
+      s+=`<polygon points="${x1},${ys} ${x2},${ys} ${x2},${y2m} ${x1},${y1m}" fill="#e24b4a" fill-opacity="0.35"/>`;
+    }
+  }
+  const pts=mktPts.map(p=>p.x+','+p.y).join(' ');
+  s+=`<polyline points="${pts}" fill="none" stroke="#378add" stroke-width="2"/>`;
+  s+=tx(toX(20,n),toY(0.35),'CfD top-up','middle',8,'#854F0B');
+  s+=tx(toX(52,n),toY(0.75),'Pays back','middle',8,'#a32d2d');
+  [0.25,0.50,0.75,1.0].forEach(v=>{s+=tx(l-3,toY(v)+3,(v*100).toFixed(0),'end',8);});
+  s+=tx(l-3,toY(strike)+3,'65','end',8,'#d85a30');
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'Time')+tx(l-6,t+5,'£/MWh');
+  document.getElementById('cfd-svg').innerHTML=s;
+}
+
+function drawHotelling(){
+  const W=280,H=210,{l,r,t,b}=PAD,iW=W-l-r,iH=H-t-b;
+  const rPct=parseInt(document.getElementById('hotelling-sl').value);
+  document.getElementById('hotelling-v').textContent=rPct+'%';
+  const rRate=rPct/100,maxT=20,backstop=0.85,p0=0.15;
+  let tHit=maxT;
+  for(let i=0;i<=maxT;i++){if(p0*Math.pow(1+rRate,i)>=backstop){tHit=i;break;}}
+  function toX(tt){return l+(tt/maxT)*iW;}function toY(p){return t+(1-Math.min(1.05,p))*iH;}
+  let s='';
+  s+=ln(l,toY(backstop),W-PAD.r,toY(backstop),'#d85a30',1.8,'5 3');
+  s+=tx(W-PAD.r,toY(backstop)-4,'Backstop','end',8,'#d85a30');
+  const pPts=[];
+  for(let i=0;i<=Math.min(tHit,maxT);i++){const pp=Math.min(backstop,p0*Math.pow(1+rRate,i));pPts.push(toX(i)+','+toY(pp));}
+  s+=`<polyline points="${pPts.join(' ')}" fill="none" stroke="#378add" stroke-width="2.2"/>`;
+  const shadePts=[[toX(0),toY(0)],...pPts.map(p=>p.split(',').map(Number)),[toX(Math.min(tHit,maxT)),toY(0)]];
+  s+=`<polygon points="${shadePts.map(p=>p[0]+','+p[1]).join(' ')}" fill="#378add" fill-opacity="0.12"/>`;
+  s+=`<circle cx="${toX(0)}" cy="${toY(p0)}" r="3" fill="#378add"/>`;
+  s+=tx(toX(0)+4,toY(p0)-3,'p₀','start',9,'#378add');
+  s+=tx(toX(maxT*0.35),toY(p0*Math.pow(1+rRate,maxT*0.35)*0.6),'p rises at rate r','middle',9,'#378add');
+  [5,10,15,20].forEach(v=>{s+=tx(toX(v),H-b+12,v,'middle',8);});
+  [0.25,0.5,0.75,1.0].forEach(v=>{s+=tx(l-3,toY(v)+3,(v*100).toFixed(0),'end',8);});
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'Time (periods)')+tx(l-6,t+5,'Price');
+  document.getElementById('hotelling-svg').innerHTML=s;
+}
+
+function drawOPEC(){
+  const W=280,H=210,{l,r,t,b}=PAD;
+  let s='';
+  const mL=50,mT=40,mW=85,mH=65;
+  s+=tx(mL+mW,mT-10,'Iran: Low','middle',10,'#378add');
+  s+=tx(mL+mW*2,mT-10,'Iran: High','middle',10,'#378add');
+  s+=tx(mL-5,mT+mH/2,'S.A.','start',9,'#d85a30');
+  s+=tx(mL-5,mT+mH/2+10,'Low','start',9,'#d85a30');
+  s+=tx(mL-5,mT+mH+mH/2,'S.A.','start',9,'#888');
+  s+=tx(mL-5,mT+mH+mH/2+10,'High','start',9,'#888');
+  s+=`<rect x="${mL}" y="${mT}" width="${mW*2}" height="${mH*2}" fill="none" stroke="#888" stroke-width="1"/>`;
+  s+=ln(mL,mT+mH,mL+mW*2,mT+mH,'#888',0.8);
+  s+=ln(mL+mW,mT,mL+mW,mT+mH*2,'#888',0.8);
+  const cells=[
+    {row:0,col:0,sa:50,iran:50,nash:false,col_bg:'#639922'},
+    {row:0,col:1,sa:1,iran:80,nash:false,col_bg:null},
+    {row:1,col:0,sa:80,iran:1,nash:false,col_bg:null},
+    {row:1,col:1,sa:10,iran:10,nash:true,col_bg:'#d85a30'},
+  ];
+  cells.forEach(c=>{
+    const cx=mL+c.col*mW+mW/2,cy=mT+c.row*mH+mH/2;
+    if(c.col_bg)s+=`<rect x="${mL+c.col*mW+2}" y="${mT+c.row*mH+2}" width="${mW-4}" height="${mH-4}" fill="${c.col_bg}" fill-opacity="0.15"/>`;
+    s+=tx(cx-10,cy-8,c.sa,'middle',12,'#d85a30');
+    s+=tx(cx+12,cy+8,c.iran,'middle',12,'#378add');
+    if(c.nash)s+=`<circle cx="${cx}" cy="${cy}" r="20" fill="none" stroke="#d85a30" stroke-width="1.5" stroke-dasharray="3 2"/>`;
+    if(c.col===0&&c.row===0)s+=`<circle cx="${cx}" cy="${cy}" r="20" fill="none" stroke="#639922" stroke-width="1.5" stroke-dasharray="3 2"/>`;
+  });
+  s+=tx(mL+mW*2+2,mT+mH/2-8,'SA','start',8,'#d85a30');
+  s+=tx(mL+mW*2+2,mT+mH/2+4,'Iran','start',8,'#378add');
+  s+=tx(W/2,H-8,'Nash: both high (10,10). Collusive optimum: both low (50,50).','middle',8,'#666');
+  document.getElementById('opec-svg').innerHTML=s;
+}
+
+function drawCarbon(){
+  const W=280,H=210,{l,r,t,b}=PAD,iW=W-l-r,iH=H-t-b;
+  function toX(q){return l+q*iW;}function toY(p){return t+(1-p)*iH;}
+  let s='';
+  s+=ln(toX(0),toY(0.1),toX(1),toY(0.7),'#378add',2);
+  s+=tx(toX(0.95),toY(0.63),'MPC','end',10,'#378add');
+  s+=ln(toX(0),toY(0.25),toX(1),toY(0.95),'#d85a30',2);
+  s+=tx(toX(0.95),toY(0.88),'MSC','end',10,'#d85a30');
+  s+=ln(toX(0),toY(0.9),toX(1),toY(0.15),'#888',2);
+  s+=tx(toX(0.95),toY(0.08),'D','end',10,'#888');
+  const qMkt=0.57,pMkt=0.1+0.6*qMkt;
+  const qOpt=0.45,pOpt=0.25+0.7*qOpt;
+  const pMktD=0.9-0.75*qMkt;
+  s+=poly([[toX(qOpt),toY(pOpt)],[toX(qMkt),toY(pMktD)],[toX(qMkt),toY(0.1+0.6*qMkt)]],'#888');
+  const taxY1=0.25+0.7*qOpt,taxY2=0.1+0.6*qOpt;
+  s+=poly([[toX(0),toY(taxY1)],[toX(qOpt),toY(taxY1)],[toX(qOpt),toY(taxY2)],[toX(0),toY(taxY2)]],'#FAC775',0.5);
+  s+=ln(toX(qOpt),t,toX(qOpt),toY(pOpt),'#888',0.8,'2 2');
+  s+=ln(toX(qMkt),t,toX(qMkt),toY(pMktD),'#888',0.8,'2 2');
+  s+=ln(l,toY(pOpt),toX(qOpt),toY(pOpt),'#888',0.8,'2 2');
+  s+=tx(toX(qOpt),H-b+12,'q*','middle',8,'#639922');
+  s+=tx(toX(qMkt),H-b+12,'qM','middle',8,'#d85a30');
+  s+=tx(l+2,toY(pOpt)+3,'p*','start',8,'#639922');
+  s+=tx(toX(0.06),toY((taxY1+taxY2)/2),'Tax','middle',8,'#854F0B');
+  s+=tx(toX(qMkt+0.04),toY((pMktD+pOpt)/2),'DWL','start',8,'#888');
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'Quantity (emissions)')+tx(l-6,t+5,'£/t');
+  document.getElementById('carbon-svg').innerHTML=s;
+}
+
+function drawScenario(){
+  const W=280,H=210,{l,r,t,b}=PAD,iW=W-l-r,iH=H-t-b;
+  const years=30;
+  function toX(yr){return l+(yr/years)*iW;}
+  function toY(val,maxV=150){return t+(1-val/maxV)*iH;}
+  const maxV=150;
+  const cps=[],steps=[],nze=[];
+  for(let i=0;i<=years;i++){
+    cps.push(toX(i)+','+toY(100+i*40/30,maxV));
+    steps.push(toX(i)+','+toY(100+i*10/30-i*i*0.04,maxV));
+    nze.push(toX(i)+','+toY(Math.max(0,100-i*100/30+i*i*0.04),maxV));
+  }
+  let s='';
+  const nzePts=nze.map(p=>p).join(' ')+' '+toX(years)+','+(H-b)+' '+l+','+(H-b);
+  s+=`<polygon points="${nzePts}" fill="#378add" fill-opacity="0.08"/>`;
+  s+=`<polyline points="${cps.join(' ')}" fill="none" stroke="#d85a30" stroke-width="2"/>`;
+  s+=`<polyline points="${steps.join(' ')}" fill="none" stroke="#639922" stroke-width="2"/>`;
+  s+=`<polyline points="${nze.join(' ')}" fill="none" stroke="#378add" stroke-width="2.2"/>`;
+  s+=tx(toX(28),toY(100+28*40/30,maxV),'CPS','start',9,'#d85a30');
+  s+=tx(toX(28),toY(100+28*10/30-28*28*0.04,maxV),'STEPS','start',9,'#639922');
+  s+=tx(toX(22),toY(Math.max(5,100-22*100/30+22*22*0.04),maxV)-6,'NZE','start',9,'#378add');
+  s+=tx(toX(0),H-b+12,'2020','middle',8);
+  s+=tx(toX(15),H-b+12,'2035','middle',8);
+  s+=tx(toX(30),H-b+12,'2050','middle',8);
+  [50,100,150].forEach(v=>{s+=tx(l-3,toY(v,maxV)+3,v,'end',8);s+=ln(l,toY(v,maxV),l+3,toY(v,maxV),'#888',0.6);});
+  s+=tx(l-3,toY(0,maxV)+3,'0','end',8);
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'Year')+tx(l-6,t+5,'CO₂');
+  document.getElementById('scenario-svg').innerHTML=s;
+}
+
+function drawStorage(){
+  const W=280,H=210,{l,r,t,b}=PAD,iW=W-l-r,iH=H-t-b;
+  // Actual UK storage capacity (GW, approx from slides)
+  const actual=[
+    {yr:2014,gw:0.02},{yr:2015,gw:0.02},{yr:2016,gw:0.03},
+    {yr:2017,gw:0.15},{yr:2018,gw:0.5},{yr:2019,gw:0.7},
+    {yr:2020,gw:0.85},{yr:2021,gw:1.1},{yr:2022,gw:1.5},
+    {yr:2023,gw:2.15},{yr:2024,gw:2.5}
+  ];
+  // FES scenarios (upper and lower by year)
+  const fesData=[
+    {yr:2024,lo:2.5,hi:2.5},{yr:2030,lo:10,hi:18},{yr:2035,lo:18,hi:32},
+    {yr:2040,lo:25,hi:42},{yr:2045,lo:28,hi:48},{yr:2050,lo:30,hi:52}
+  ];
+  const minYr=2014,maxYr=2050,maxGW=55;
+  function toX(yr){return l+((yr-minYr)/(maxYr-minYr))*iW;}
+  function toY(gw){return t+(1-Math.min(1,gw/maxGW))*iH;}
+  let s='';
+  // FES band
+  const upPts=fesData.map(d=>toX(d.yr)+','+toY(d.hi));
+  const loPts=[...fesData].reverse().map(d=>toX(d.yr)+','+toY(d.lo));
+  s+=`<polygon points="${upPts.join(' ')} ${loPts.join(' ')}" fill="#d85a30" fill-opacity="0.12"/>`;
+  s+=`<polyline points="${fesData.map(d=>toX(d.yr)+','+toY(d.hi)).join(' ')}" fill="none" stroke="#d85a30" stroke-width="1.5" stroke-dasharray="4 2"/>`;
+  s+=`<polyline points="${fesData.map(d=>toX(d.yr)+','+toY(d.lo)).join(' ')}" fill="none" stroke="#639922" stroke-width="1.5" stroke-dasharray="4 2"/>`;
+  // Actual
+  s+=`<polyline points="${actual.map(d=>toX(d.yr)+','+toY(d.gw)).join(' ')}" fill="none" stroke="#378add" stroke-width="2.2"/>`;
+  actual.forEach(d=>{ s+=`<circle cx="${toX(d.yr)}" cy="${toY(d.gw)}" r="2.5" fill="#378add"/>`; });
+  // Labels
+  s+=tx(toX(2050),toY(52)-6,'52 GW','end',8,'#d85a30');
+  s+=tx(toX(2050),toY(30)+10,'30 GW','end',8,'#639922');
+  s+=tx(toX(2018),toY(0.5)-6,'Actual','middle',8,'#378add');
+  // Axis labels
+  [2020,2030,2040,2050].forEach(yr=>{s+=tx(toX(yr),H-b+12,yr,'middle',7);});
+  [10,20,30,40,50].forEach(v=>{s+=tx(l-3,toY(v)+3,v,'end',7);s+=ln(l,toY(v),l+2,toY(v),'#888',0.6);});
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'Year')+tx(l-6,t+5,'GW');
+  document.getElementById('storage-svg').innerHTML=s;
+}
+
+function drawRebound(){
+  const W=280,H=210,{l,r,t,b}=PAD,iW=W-l-r,iH=H-t-b;
+  // Bar chart: expected saving, actual saving (direct rebound 20%, economy-wide ~50%)
+  const bars=[
+    {lbl:'Expected',val:1.0,col:'#d85a30'},
+    {lbl:'Direct (~20%)',val:0.80,col:'#378add'},
+    {lbl:'Economy-wide\n(~50%)',val:0.50,col:'#378add'},
+  ];
+  const maxV=1.1,nBars=3,barW=iW/(nBars*2+1);
+  function toX(i){return l+barW*(2*i+1);}
+  function toY(v){return t+(1-v/maxV)*iH;}
+  let s='';
+  // Rebound annotations
+  bars.forEach((bar,i)=>{
+    const x=toX(i),y=toY(bar.val),yBase=toY(0);
+    if(i>0){
+      // rebound lost = difference from expected
+      const yExp=toY(1.0);
+      s+=`<rect x="${x-barW/2}" y="${yExp}" width="${barW}" height="${y-yExp}" fill="#FAC775" fill-opacity="0.6"/>`;
+    }
+    s+=`<rect x="${x-barW/2}" y="${y}" width="${barW}" height="${yBase-y}" fill="${bar.col}" fill-opacity="${i===0?0.7:0.5}"/>`;
+    // label at top
+    const lbl=bar.lbl.replace('\n',' ');
+    s+=tx(x,y-4,(bar.val*100).toFixed(0)+'%','middle',9,bar.col);
+    // x label
+    if(bar.lbl.includes('\n')){
+      s+=tx(x,H-b+12,'Economy','middle',7,'#888');
+      s+=tx(x,H-b+21,'-wide','middle',7,'#888');
+    } else {
+      s+=tx(x,H-b+12,lbl,'middle',7,'#888');
+    }
+  });
+  // Legend
+  s+=tx(toX(0),t+12,'Expected saving','middle',8,'#d85a30');
+  s+=tx(toX(1.5),toY(0.92),'Rebound','middle',8,'#854F0B');
+  // Y axis
+  [0.25,0.5,0.75,1.0].forEach(v=>{s+=tx(l-3,toY(v)+3,(v*100).toFixed(0)+'%','end',8);s+=ln(l,toY(v),l+2,toY(v),'#888',0.6);});
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'Rebound type')+tx(l-6,t+5,'%');
+  document.getElementById('rebound-svg').innerHTML=s;
+}
+
+// Small SVG generators for quiz/flashcards
+function makeSdSvgSmall(showTax){
+  const W=200,H=140,l=30,r=10,t=10,b=24,iW=W-l-r,iH=H-t-b;
+  function toX(q){return l+q*iW;}function toY(p){return t+(1-p)*iH;}
+  let s=`<svg viewBox="0 0 ${W} ${H}">`;
+  s+=ln(toX(0),toY(0),toX(1),toY(1),'#378add',1.8);
+  s+=ln(toX(0),toY(1),toX(1),toY(0),'#d85a30',1.8);
+  s+=tx(toX(0.93),toY(0.1),'S','middle',10,'#378add');
+  s+=tx(toX(0.93),toY(0.92),'D','middle',10,'#d85a30');
+  if(showTax){
+    const qT=0.45,pC=0.55,pS=0.35;
+    s+=ln(toX(0),toY(0.2),toX(0.8),toY(1),'#378add',1.4,'3 2');
+    s+=poly([[toX(qT),toY(pC)],[toX(qT),toY(pS)],[toX(0.5),toY(0.5)]],'#888');
+    s+=poly([[toX(0),toY(pC)],[toX(qT),toY(pC)],[toX(qT),toY(pS)],[toX(0),toY(pS)]],'#FAC775',0.55);
+    s+=tx(l+3,toY(pC)+3,'pC','start',8,'#d85a30');s+=tx(l+3,toY(pS)+3,'pS','start',8,'#378add');
+    s+=tx(toX(qT),H-b-1,'q*','middle',8,'#888');
+  }else{
+    s+=poly([[toX(0),toY(1)],[toX(0.5),toY(0.5)],[toX(0),toY(0.5)]],'#d85a30',0.2);
+    s+=poly([[toX(0),toY(0)],[toX(0.5),toY(0.5)],[toX(0),toY(0.5)]],'#378add',0.18);
+    s+=tx(l+3,toY(0.5)+3,'p*','start',8,'var(--color-text-primary,#333)');
+    s+=tx(toX(0.5),H-b-1,'q*','middle',8,'var(--color-text-primary,#333)');
+    s+=tx(toX(0.07),toY(0.85),'CS','middle',9,'#d85a30');s+=tx(toX(0.07),toY(0.28),'PS','middle',9,'#378add');
+  }
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'Q')+tx(l-5,t+4,'P');
+  return s+'</svg>';
+}
+
+function makeMonoSvgSmall(){
+  const W=200,H=140,l=28,r=10,t=10,b=24,iW=W-l-r,iH=H-t-b;
+  function toX(q){return l+q*iW;}function toY(p){return t+(1-p)*iH;}
+  let s=`<svg viewBox="0 0 ${W} ${H}">`;
+  s+=ln(toX(0),toY(1),toX(1),toY(0),'#d85a30',1.8);
+  s+=ln(toX(0),toY(1),toX(0.5),toY(0),'#d85a30',1.4,'3 2');
+  s+=ln(toX(0),toY(0.2),toX(1),toY(0.2),'#378add',1.8);
+  s+=poly([[toX(0),toY(0.6)],[toX(0.4),toY(0.6)],[toX(0.4),toY(0.2)],[toX(0),toY(0.2)]],'#FAC775',0.5);
+  s+=poly([[toX(0.4),toY(0.6)],[toX(0.4),toY(0.2)],[toX(0.8),toY(0.2)]],'#888',0.3);
+  s+=tx(toX(0.92),toY(0.12),'D','middle',10,'#d85a30');s+=tx(toX(0.44),toY(0.05),'MR','middle',9,'#d85a30');
+  s+=tx(toX(0.92),toY(0.23),'MC','middle',9,'#378add');
+  s+=tx(toX(0.05),toY(0.42),'π','middle',12,'#854F0B');s+=tx(toX(0.5),toY(0.08),'DWL','middle',9,'#888');
+  s+=ln(toX(0.4),t,toX(0.4),toY(0.6),'#888',0.8,'2 2');s+=ln(l,toY(0.6),toX(0.4),toY(0.6),'#888',0.8,'2 2');
+  s+=tx(l+2,toY(0.6)+3,'pm','start',8);s+=tx(toX(0.4),H-b-1,'qm','middle',8);
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'Q')+tx(l-5,t+4,'P');
+  return s+'</svg>';
+}
+
+function makeCostSvgSmall(){
+  const W=200,H=140,l=28,r=10,t=10,b=24,iW=W-l-r,iH=H-t-b;
+  const fc=30,c=0.003,maxQ=60,maxC=180;
+  function toX(q){return l+(q/maxQ)*iW;}function toY(cost){return t+(1-Math.min(1,cost/maxC))*iH;}
+  const acP=[],mcP=[],avcP=[];
+  for(let q=2;q<=maxQ;q++){acP.push(toX(q)+','+toY(fc/q+c*q*q));mcP.push(toX(q)+','+toY(3*c*q*q));avcP.push(toX(q)+','+toY(c*q*q));}
+  let s=`<svg viewBox="0 0 ${W} ${H}">`;
+  s+=`<polyline points="${avcP.join(' ')}" fill="none" stroke="#888" stroke-width="1.4" stroke-dasharray="3 2"/>`;
+  s+=`<polyline points="${acP.join(' ')}" fill="none" stroke="#d85a30" stroke-width="1.8"/>`;
+  s+=`<polyline points="${mcP.join(' ')}" fill="none" stroke="#378add" stroke-width="1.8"/>`;
+  const mesQ=Math.pow(fc/(2*c),1/3);const mesAC=fc/mesQ+c*mesQ*mesQ;
+  if(mesAC<maxC)s+=`<circle cx="${toX(mesQ)}" cy="${toY(mesAC)}" r="4" fill="#d85a30" fill-opacity="0.8"/>`;
+  s+=tx(toX(45),toY(fc/45+c*45*45)+12,'AC','middle',9,'#d85a30');s+=tx(toX(50),toY(3*c*50*50)+12,'MC','middle',9,'#378add');s+=tx(toX(40),toY(c*40*40)+12,'AVC','middle',8,'#888');
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'Q')+tx(l-5,t+4,'£');
+  return s+'</svg>';
+}
+
+function makeCournotSvgSmall(){
+  const W=200,H=150,l=28,r=10,t=10,b=24,iW=W-l-r,iH=H-t-b,maxQ=12;
+  function toX(q1){return l+(q1/maxQ)*iW;}function toY(q2){return t+(1-q2/maxQ)*iH;}
+  let s=`<svg viewBox="0 0 ${W} ${H}">`;
+  s+=ln(toX(6),toY(0),toX(0),toY(12),'#d85a30',2);
+  s+=ln(toX(0),toY(6),toX(12),toY(0),'#378add',2);
+  s+=`<circle cx="${toX(4)}" cy="${toY(4)}" r="5" fill="#639922"/>`;
+  s+=ln(toX(4),toY(4),toX(4),H-b,'#888',0.8,'2 2');s+=ln(toX(4),toY(4),l,toY(4),'#888',0.8,'2 2');
+  s+=tx(toX(4),H-b+12,'4','middle',8);s+=tx(l-4,toY(4)+3,'4','end',8);
+  s+=tx(toX(1.5),toY(10.5),'RF(A)','middle',8,'#d85a30');s+=tx(toX(9),toY(1.2),'RF(B)','middle',8,'#378add');
+  s+=tx(toX(4)+10,toY(4)-5,'Nash','start',8,'#3b6d11');
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'q₁')+tx(l-6,t+5,'q₂');
+  return s+'</svg>';
+}
+
+function makeScreenSvgSmall(){
+  const W=200,H=130,l=28,r=10,t=10,b=24,iW=W-l-r,iH=H-t-b,maxX=100,maxY=200;
+  function toX(x){return l+(x/maxX)*iW;}function toY(y){return t+(1-y/maxY)*iH;}
+  const ls=[{fc:20,vc:1.2,col:'#d85a30',lbl:'Peaking'},{fc:60,vc:0.7,col:'#BA7517',lbl:'Mid'},{fc:100,vc:0.3,col:'#378add',lbl:'Base'}];
+  let s=`<svg viewBox="0 0 ${W} ${H}">`;
+  s+=poly([[toX(0),toY(0)],[toX(80),toY(0)],[toX(80),toY(maxY)],[toX(0),toY(maxY)]],'#d85a30',0.06);
+  ls.forEach(l2=>{const y1=Math.min(maxY,l2.fc+l2.vc*maxX);const xEff=y1>=maxY?(maxY-l2.fc)/l2.vc:maxX;s+=ln(toX(0),toY(l2.fc),toX(xEff),toY(Math.min(maxY,l2.fc+l2.vc*xEff)),l2.col,2);s+=tx(toX(xEff-2),toY(l2.fc+l2.vc*xEff)+10,l2.lbl,'end',8,l2.col);});
+  s+=ln(toX(80),t,toX(80),H-b,'#888',0.8,'3 2');
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'Utilisation')+tx(l-5,t+4,'£');
+  return s+'</svg>';
+}
+
+function makeLcoeSvgSmall(){
+  const W=200,H=130,l=32,r=10,t=10,b=24,iW=W-l-r,iH=H-t-b,maxLCOE=500;
+  function toX(lf){return l+lf*iW;}function toY(v){return t+(1-Math.min(1,v/maxLCOE))*iH;}
+  const gas=[],off=[];
+  for(let lf=0.05;lf<=1;lf+=0.02){gas.push(toX(lf)+','+toY(70/lf+40));off.push(toX(lf)+','+toY(100/lf+5));}
+  let s=`<svg viewBox="0 0 ${W} ${H}">`;
+  s+=`<polyline points="${off.join(' ')}" fill="none" stroke="#378add" stroke-width="1.8"/>`;
+  s+=`<polyline points="${gas.join(' ')}" fill="none" stroke="#d85a30" stroke-width="1.8"/>`;
+  s+=tx(toX(0.88),toY(70/0.88+40)+12,'Gas','middle',8,'#d85a30');s+=tx(toX(0.88),toY(100/0.88+5)+12,'Offshore','middle',8,'#378add');
+  [100,200,300,400].forEach(v=>{s+=tx(l-3,toY(v)+3,v,'end',7);});
+  ['25%','50%','75%'].forEach((lbl,i)=>{s+=tx(toX((i+1)*0.25),H-b+12,lbl,'middle',7);});
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'Load factor')+tx(l-5,t+4,'£/MWh');
+  return s+'</svg>';
+}
+
+function makeMeritSvgSmall(){
+  const W=200,H=130,l=28,r=10,t=10,b=24,iW=W-l-r,iH=H-t-b;
+  const segs=[{from:0,to:0.30,srmc:5,col:'#639922'},{from:0.30,to:0.45,srmc:20,col:'#BA7517'},{from:0.45,to:0.75,srmc:60,col:'#378add'},{from:0.75,to:1.0,srmc:120,col:'#d85a30'}];
+  const maxSRMC=140;
+  function toX(q){return l+q*iW;}function toY(p){return t+(1-p/maxSRMC)*iH;}
+  let s=`<svg viewBox="0 0 ${W} ${H}">`;
+  segs.forEach(seg=>{
+    const x1=toX(seg.from),x2=toX(seg.to),y1=toY(seg.srmc),yBase=toY(0);
+    s+=`<rect x="${x1}" y="${y1}" width="${x2-x1}" height="${yBase-y1}" fill="${seg.col}" fill-opacity="0.7" stroke="#fff" stroke-width="0.5"/>`;
+  });
+  const dX=toX(0.6);
+  s+=ln(dX,t,dX,H-b,'#1a1a1a',2,'4 2');
+  s+=tx(dX+3,t+10,'D','start',9,'#1a1a1a');
+  s+=ln(l,toY(60),W-r,toY(60),'#1a1a1a',1,'3 2');
+  s+=tx(W-r,toY(60)-3,'£60','end',8,'#1a1a1a');
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'Capacity')+tx(l-5,t+4,'£/MWh');
+  return s+'</svg>';
+}
+
+function makeHotellingSvgSmall(){
+  const W=200,H=130,l=28,r=10,t=10,b=24,iW=W-l-r,iH=H-t-b;
+  const maxT=15,backstop=0.8,p0=0.15,r2=0.07;
+  function toX(tt){return l+(tt/maxT)*iW;}function toY(p){return t+(1-Math.min(1.05,p))*iH;}
+  let s=`<svg viewBox="0 0 ${W} ${H}">`;
+  s+=ln(l,toY(backstop),W-r,toY(backstop),'#d85a30',1.6,'4 2');
+  s+=tx(W-r,toY(backstop)-3,'Backstop','end',8,'#d85a30');
+  const pts=[];
+  for(let i=0;i<=maxT;i++){const pp=Math.min(backstop,p0*Math.pow(1+r2,i));pts.push(toX(i)+','+toY(pp));}
+  s+=`<polyline points="${pts.join(' ')}" fill="none" stroke="#378add" stroke-width="2"/>`;
+  s+=tx(toX(7),toY(p0*Math.pow(1.07,7))+14,'p·(1+r)ᵗ','middle',8,'#378add');
+  s+=`<circle cx="${toX(0)}" cy="${toY(p0)}" r="3" fill="#378add"/>`;
+  s+=tx(toX(0)+4,toY(p0)-3,'p₀','start',8,'#378add');
+  [5,10,15].forEach(v=>{s+=tx(toX(v),H-b+12,v,'middle',7);});
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'Time')+tx(l-5,t+4,'P');
+  return s+'</svg>';
+}
+
+function makeOPECSvgSmall(){
+  const W=200,H=150,ml=35,mt=30,mw=68,mh=50;
+  let s=`<svg viewBox="0 0 ${W} ${H}">`;
+  s+=tx(ml+mw,mt-8,'Iran: Low','middle',9,'#378add');
+  s+=tx(ml+mw*2,mt-8,'Iran: High','middle',9,'#378add');
+  s+=tx(ml-4,mt+mh/2,'SA Low','end',8,'#d85a30');
+  s+=tx(ml-4,mt+mh+mh/2,'SA High','end',8,'#888');
+  s+=`<rect x="${ml}" y="${mt}" width="${mw*2}" height="${mh*2}" fill="none" stroke="#888" stroke-width="0.8"/>`;
+  s+=ln(ml,mt+mh,ml+mw*2,mt+mh,'#888',0.8);s+=ln(ml+mw,mt,ml+mw,mt+mh*2,'#888',0.8);
+  [[50,50,false,'#639922'],[1,80,false,null],[80,1,false,null],[10,10,true,'#d85a30']].forEach((c,i)=>{
+    const row=Math.floor(i/2),col=i%2;
+    const cx=ml+col*mw+mw/2,cy=mt+row*mh+mh/2;
+    if(c[3])s+=`<rect x="${ml+col*mw+2}" y="${mt+row*mh+2}" width="${mw-4}" height="${mh-4}" fill="${c[3]}" fill-opacity="0.15"/>`;
+    s+=tx(cx-8,cy-4,c[0],'middle',11,'#d85a30');
+    s+=tx(cx+8,cy+6,c[1],'middle',11,'#378add');
+    if(c[2])s+=`<circle cx="${cx}" cy="${cy}" r="16" fill="none" stroke="#d85a30" stroke-width="1.5" stroke-dasharray="3 2"/>`;
+  });
+  s+=tx(W/2,H-4,'Nash=(10,10)  Optimal=(50,50)','middle',8,'#666');
+  return s+'</svg>';
+}
+
+function makeCarbonSvgSmall(){
+  const W=200,H=140,l=28,r=10,t=10,b=24,iW=W-l-r,iH=H-t-b;
+  function toX(q){return l+q*iW;}function toY(p){return t+(1-p)*iH;}
+  let s=`<svg viewBox="0 0 ${W} ${H}">`;
+  s+=ln(toX(0),toY(0.1),toX(1),toY(0.7),'#378add',1.8);
+  s+=tx(toX(0.92),toY(0.63),'MPC','end',9,'#378add');
+  s+=ln(toX(0),toY(0.25),toX(1),toY(0.95),'#d85a30',1.8);
+  s+=tx(toX(0.92),toY(0.88),'MSC','end',9,'#d85a30');
+  s+=ln(toX(0),toY(0.9),toX(1),toY(0.15),'#888',1.8);
+  s+=tx(toX(0.92),toY(0.08),'D','end',9,'#888');
+  const qOpt=0.45,taxY1=0.25+0.7*qOpt,taxY2=0.1+0.6*qOpt;
+  s+=poly([[toX(0),toY(taxY1)],[toX(qOpt),toY(taxY1)],[toX(qOpt),toY(taxY2)],[toX(0),toY(taxY2)]],'#FAC775',0.5);
+  s+=tx(toX(0.08),toY((taxY1+taxY2)/2),'τ','middle',10,'#854F0B');
+  s+=tx(toX(0.5),toY(0.1),'DWL','middle',8,'#888');
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'Emissions')+tx(l-5,t+4,'£');
+  return s+'</svg>';
+}
+
+function makeScenarioSvgSmall(){
+  const W=200,H=130,l=28,r=10,t=10,b=24,iW=W-l-r,iH=H-t-b,years=30,maxV=150;
+  function toX(yr){return l+(yr/years)*iW;}
+  function toY(val){return t+(1-val/maxV)*iH;}
+  const cps=[],steps=[],nze=[];
+  for(let i=0;i<=years;i++){
+    cps.push(toX(i)+','+toY(100+i*40/30));
+    steps.push(toX(i)+','+toY(100+i*10/30-i*i*0.04));
+    nze.push(toX(i)+','+toY(Math.max(0,100-i*100/30+i*i*0.04)));
+  }
+  let s=`<svg viewBox="0 0 ${W} ${H}">`;
+  s+=`<polyline points="${cps.join(' ')}" fill="none" stroke="#d85a30" stroke-width="1.8"/>`;
+  s+=`<polyline points="${steps.join(' ')}" fill="none" stroke="#639922" stroke-width="1.8"/>`;
+  s+=`<polyline points="${nze.join(' ')}" fill="none" stroke="#378add" stroke-width="2"/>`;
+  s+=tx(toX(28),toY(100+28*40/30),'CPS','start',8,'#d85a30');
+  s+=tx(toX(27),toY(100+27*10/30-27*27*0.04),'STEPS','start',8,'#639922');
+  s+=tx(toX(20),toY(Math.max(5,100-20*100/30+20*20*0.04))-6,'NZE','start',8,'#378add');
+  s+=tx(toX(0),H-b+12,'2020','middle',7);s+=tx(toX(30),H-b+12,'2050','middle',7);
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'Year')+tx(l-5,t+4,'CO₂');
+  return s+'</svg>';
+}
+
+function makeStorageSvgSmall(){
+  const W=200,H=130,l=28,r=10,t=10,b=24,iW=W-l-r,iH=H-t-b;
+  const minYr=2014,maxYr=2050,maxGW=55;
+  const actual=[{yr:2014,gw:0.02},{yr:2017,gw:0.15},{yr:2018,gw:0.5},{yr:2020,gw:0.85},{yr:2022,gw:1.5},{yr:2024,gw:2.5}];
+  const fesHi=[{yr:2024,gw:2.5},{yr:2030,gw:18},{yr:2040,gw:42},{yr:2050,gw:52}];
+  const fesLo=[{yr:2024,gw:2.5},{yr:2030,gw:10},{yr:2040,gw:25},{yr:2050,gw:30}];
+  function toX(yr){return l+((yr-minYr)/(maxYr-minYr))*iW;}
+  function toY(gw){return t+(1-Math.min(1,gw/maxGW))*iH;}
+  let s=`<svg viewBox="0 0 ${W} ${H}">`;
+  s+=`<polyline points="${fesHi.map(d=>toX(d.yr)+','+toY(d.gw)).join(' ')}" fill="none" stroke="#d85a30" stroke-width="1.4" stroke-dasharray="4 2"/>`;
+  s+=`<polyline points="${fesLo.map(d=>toX(d.yr)+','+toY(d.gw)).join(' ')}" fill="none" stroke="#639922" stroke-width="1.4" stroke-dasharray="4 2"/>`;
+  s+=`<polyline points="${actual.map(d=>toX(d.yr)+','+toY(d.gw)).join(' ')}" fill="none" stroke="#378add" stroke-width="2"/>`;
+  actual.forEach(d=>{s+=`<circle cx="${toX(d.yr)}" cy="${toY(d.gw)}" r="2" fill="#378add"/>`;});
+  s+=tx(toX(2044),toY(52)-5,'52GW','end',7,'#d85a30');
+  s+=tx(toX(2044),toY(30)+9,'30GW','end',7,'#639922');
+  [2020,2035,2050].forEach(yr=>{s+=tx(toX(yr),H-b+12,yr,'middle',6);});
+  [10,30,50].forEach(v=>{s+=tx(l-3,toY(v)+3,v,'end',7);});
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'Year')+tx(l-5,t+4,'GW');
+  return s+'</svg>';
+}
+
+function makeReboundSvgSmall(){
+  const W=200,H=130,l=28,r=10,t=10,b=24,iW=W-l-r,iH=H-t-b;
+  const bars=[{lbl:'Expected',val:1.0,col:'#d85a30'},{lbl:'Direct',val:0.80,col:'#378add'},{lbl:'Economy',val:0.50,col:'#378add'}];
+  const maxV=1.1,nBars=3,barW=iW/(nBars*2+1);
+  function toX(i){return l+barW*(2*i+1);}
+  function toY(v){return t+(1-v/maxV)*iH;}
+  let s=`<svg viewBox="0 0 ${W} ${H}">`;
+  bars.forEach((bar,i)=>{
+    const x=toX(i),y=toY(bar.val),yBase=toY(0);
+    if(i>0){const yExp=toY(1.0);s+=`<rect x="${x-barW/2}" y="${yExp}" width="${barW}" height="${y-yExp}" fill="#FAC775" fill-opacity="0.6"/>`;}
+    s+=`<rect x="${x-barW/2}" y="${y}" width="${barW}" height="${yBase-y}" fill="${bar.col}" fill-opacity="${i===0?0.7:0.5}"/>`;
+    s+=tx(x,y-4,(bar.val*100).toFixed(0)+'%','middle',8,bar.col);
+    s+=tx(x,H-b+12,bar.lbl,'middle',6,'#888');
+  });
+  [0.5,1.0].forEach(v=>{s+=tx(l-3,toY(v)+3,(v*100).toFixed(0)+'%','end',7);});
+  s+=ln(l,t,l,H-b,'var(--color-text-secondary,#888)',1)+ln(l,H-b,W-r,H-b,'var(--color-text-secondary,#888)',1);
+  s+=tx(l+(W-l-r)/2,H-3,'Rebound type')+tx(l-5,t+4,'%');
+  return s+'</svg>';
+}
+
+function getSvg(key){
+  if(!key)return '';
+  if(key==='sd_no_tax')return makeSdSvgSmall(false);
+  if(key==='sd_tax'||key==='sd_cs')return makeSdSvgSmall(key==='sd_tax');
+  if(key==='mono')return makeMonoSvgSmall();
+  if(key==='cost')return makeCostSvgSmall();
+  if(key==='cournot')return makeCournotSvgSmall();
+  if(key==='screen')return makeScreenSvgSmall();
+  if(key==='lcoe_note')return makeLcoeSvgSmall();
+  if(key==='merit')return makeMeritSvgSmall();
+  if(key==='hotelling')return makeHotellingSvgSmall();
+  if(key==='opec')return makeOPECSvgSmall();
+  if(key==='carbon')return makeCarbonSvgSmall();
+  if(key==='scenario')return makeScenarioSvgSmall();
+  if(key==='storage')return makeStorageSvgSmall();
+  if(key==='rebound')return makeReboundSvgSmall();
+  return '';
+}
+
+// ---- QUIZ DATA ----
+const ALL_QUESTIONS=[
+  // SESSION 1
+  {type:'mc',topic:'UK Energy System',q:'What is the largest sector of UK final energy consumption?',opts:['Domestic (27%)','Industry (15%)','Transport (42%)','Services (16%)'],ans:2,exp:'Transport accounts for 42% of UK final energy consumption — the largest sector, driven mainly by liquid fuels for road and air travel.'},
+  {type:'mc',topic:'UK Energy System',q:'Approximately what share of UK electricity came from wind in 2025?',opts:['~6%','~14%','~30%','~50%'],ans:2,exp:'Wind provided around 30% of UK electricity in 2025 — the largest single source, ahead of gas at ~27%.'},
+  {type:'mc',topic:'UK Energy System',q:'Where does the UK source ~78% of its imported natural gas?',opts:['Qatar LNG','USA LNG','Algeria pipeline','Norway pipeline'],ans:3,exp:'Norway supplies 78% of UK gas via pipeline. USA supplies 17% as LNG.'},
+  {type:'mc',topic:'UK Energy System',q:'What does the energy trilemma describe?',opts:['Coal/gas/nuclear trade-offs','Carbon, cost, and security of supply tensions','Three stages of electricity distribution','Import/export/domestic balance'],ans:1,exp:'The trilemma: decarbonisation, affordability, and security of supply — improving one typically compromises another.'},
+  // SESSION 2
+  {type:'mc',topic:'Supply & Demand',q:'Which is NOT an assumption of perfect competition?',opts:['Many firms and consumers','Homogeneous product','Government price controls','Free entry and exit'],ans:2,exp:'Government price controls violate the price mechanism assumed in perfect competition. The model requires free markets to clear.'},
+  {type:'mc',topic:'Elasticity',q:'If electricity price rises 10% and quantity demanded falls 2%, PED is:',opts:['-5.0','-0.2','-2.0','+0.2'],ans:1,exp:'PED = %ΔQd / %ΔP = -2%/+10% = -0.2. Energy demand is inelastic (|PED|<1) because energy is a necessity with few short-run substitutes.'},
+  {type:'mc',topic:'Elasticity',q:'The UK gas demand PED is approximately:',opts:['-2.5','-1.0','-0.1','+0.5'],ans:2,exp:'UK gas demand PED ≈ -0.1, meaning demand is very inelastic. A 10% price rise reduces demand by only about 1%.'},
+  {type:'mc',topic:'Supply & Demand',svgGen:'sd_no_tax',q:'In the supply & demand diagram, what area represents consumer surplus?',opts:['Area below the demand curve and above price','Area above the demand curve and below price','Area between supply and demand below equilibrium','Area below the supply curve'],ans:0,exp:'Consumer surplus is the area between the demand curve and the equilibrium price — the labelled CS triangle above p* and below D.'},
+  {type:'mc',topic:'Taxes',q:'The deadweight loss from a tax arises because:',opts:['Consumers pay more tax than suppliers','The tax revenue goes to government','Mutually beneficial trades no longer take place','Supply shifts to the right'],ans:2,exp:'DWL represents trades that were beneficial at the pre-tax price but no longer occur after the tax wedge.'},
+  // SESSION 3
+  {type:'mc',topic:'Costs',q:'Which cost function gives a U-shaped average cost curve?',opts:['C(Q)=f+cQ','C(Q)=cQ²','C(Q)=f+cQ³','C(Q)=f/Q'],ans:2,exp:'C(Q)=f+cQ³ gives AC=f/Q+cQ². This falls initially then rises when marginal returns diminish.'},
+  {type:'mc',topic:'Costs',svgGen:'cost',q:'In the cost curve diagram, where is the minimum efficient scale (MES)?',opts:['Where MC is at its minimum','Where MC crosses AC','Where AVC equals AC','Where AC equals zero'],ans:1,exp:'MES is where MC crosses AC from below — the minimum of the AC curve.'},
+  {type:'mc',topic:'Monopoly',svgGen:'mono',q:'In the monopoly diagram, what does the shaded yellow area represent?',opts:['Consumer surplus','Deadweight loss','Monopoly profit','Tax revenue'],ans:2,exp:'The yellow rectangle between pm and MC across the monopoly output qm represents the monopolist\'s profit.'},
+  {type:'mc',topic:'Oligopoly',svgGen:'cournot',q:'In the Cournot diagram, what does the green dot represent?',opts:['The competitive equilibrium','The monopoly output','The Nash equilibrium','The collusive outcome'],ans:2,exp:'The Nash equilibrium (4,4) is where both reaction functions intersect — neither firm can improve profit given the other\'s choice.'},
+  {type:'mc',topic:'Oligopoly',q:'In the Cournot duopoly with p=29-2(q1+q2) and c(qi)=5qi, the Nash equilibrium is:',opts:['q1=q2=2, p=25','q1=q2=4, p=21','q1=q2=6, p=17','q1=q2=8, p=13'],ans:1,exp:'Reaction functions: q1=6-q2/2 and q2=6-q1/2. Solving simultaneously: q1=q2=4. Price: p=29-2(4+4)=21.'},
+  // SESSION 4
+  {type:'mc',topic:'Investment',q:'IRR is defined as:',opts:['Average profit / average investment','Initial cost / monthly revenue','Discount rate where NPV=0','NPV of costs / NPV of generation'],ans:2,exp:'IRR is the discount rate r for which NPV=0. Invest if IRR > WACC.'},
+  {type:'mc',topic:'Investment',q:'At a higher discount rate, which power plant becomes relatively more attractive?',opts:['Nuclear — low running costs','Hydro — no fuel costs','Gas CCGT — high future running costs are discounted heavily','Coal — low fixed costs'],ans:2,exp:'A higher discount rate shrinks the PV of future costs. Gas has low upfront capital but high future fuel costs — these are discounted more, making gas relatively cheaper.'},
+  {type:'mc',topic:'LCOE',svgGen:'lcoe_note',q:'Gas CCGT has an LCOE of approximately £420/MWh at which load factor?',opts:['93%','50%','30%','5%'],ans:3,exp:'At 5% load factor, capital cost is spread over very little generation, pushing LCOE to ~£420/MWh. At 93% it falls to ~£80/MWh.'},
+  {type:'mc',topic:'Investment',q:'The screening curve shows that baseload plants should have:',opts:['High VC and low FC','Low VC and high FC','High VC and high FC','Low VC and low FC'],ans:1,exp:'Baseload plants run most hours — their high capital (FC) is spread over many MWh. Low variable cost means they remain cheapest at high utilisation.'},
+  {type:'short',topic:'Investment',q:'Explain NPV and state the investment decision rule.',ans:'NPV = sum of all project cash flows discounted to present value: Σ payment_t × (1+r)^{-t}. Decision rule: invest if NPV > 0. When comparing projects, choose highest NPV.',keywords:['discount','cash','flow','present','value','positive','sum','time']},
+  // SESSION 5
+  {type:'mc',topic:'Electricity Markets',q:'Which part of the UK electricity system is a natural monopoly?',opts:['Generation','Supply (retail)','Transmission and distribution networks','Metering'],ans:2,exp:'Transmission and distribution networks are natural monopolies — duplicating wires is wasteful. Generation and supply are competitive; metering is also competitive.'},
+  {type:'mc',topic:'Electricity Markets',svgGen:'merit',q:'In the merit order diagram, which technology sets the market clearing price when demand is at 60% of capacity?',opts:['Renewables at ~£5/MWh','Nuclear at ~£20/MWh','CCGT at ~£60/MWh','Peaking plant at ~£120/MWh'],ans:2,exp:'At 60% demand, CCGT is the marginal generator setting the price at ~£60/MWh. This marginal price applies to all generators (uniform price auction).'},
+  {type:'mc',topic:'Electricity Markets',q:'What is the merit order effect of more renewables?',opts:['Raises wholesale prices','Has no effect','Depresses wholesale prices due to near-zero SRMC','Shifts nuclear right on the supply stack'],ans:2,exp:'Renewables have near-zero SRMC so they are dispatched first. More renewables push conventional generators further right, reducing average wholesale prices.'},
+  {type:'mc',topic:'Decarbonisation',q:'UK renewables in 2024 produced 144 TWh equal to what share of electricity demand?',opts:['32%','40.4%','50.4%','62%'],ans:2,exp:'2024 was a record year: renewables generated 144 TWh, equal to 50.4% of UK electricity demand, led by offshore wind.'},
+  // SESSION 6
+  {type:'mc',topic:'Regulation',q:'What does "RPI-X" regulation mean?',opts:['Prices are fixed permanently','Prices rise with inflation minus an efficiency factor X','Prices are set equal to rate of return on assets','Prices track the market average'],ans:1,exp:'RPI-X (Littlechild, 1983): prices can rise with RPI but must fall by factor X representing expected efficiency gains. Now evolved into RIIO.'},
+  // SESSION 7
+  {type:'mc',topic:'Global Oil',q:'What does a "1P" (proved) oil reserve mean in the McKelvey classification?',opts:['50% chance of recovery','90% chance of recovery','Oil that has been extracted already','All discovered oil regardless of economics'],ans:1,exp:'1P (Proved) reserves have a 90% probability of recovery. 2P (Probable): 50%. 3P (Possible): 10%. These are not just technical but economic assessments.'},
+  {type:'mc',topic:'OPEC & Game Theory',svgGen:'opec',q:'In the OPEC payoff matrix, what is the Nash equilibrium outcome?',opts:['Both keep output low, earning £50bn each','One cheats, the other does not','Both raise output, earning only £10bn each','Saudi Arabia raises output, Iran keeps it low'],ans:2,exp:'The Nash equilibrium is where both countries raise output (dominant strategy), earning only £10bn each. Neither can improve their payoff unilaterally.'},
+  {type:'mc',topic:'OPEC & Game Theory',q:'The "grim strategy" in the OPEC cartel game is sustainable if the discount factor δ is:',opts:['δ < 0.3','δ > 3/7 (≈ 0.43)','δ = 1.0','δ > 0.9'],ans:1,exp:'Cooperation wins if 50/(1-δ) > 80+10δ/(1-δ), which simplifies to δ > 3/7 ≈ 0.43. Players must value the future enough.'},
+  // SESSION 8
+  {type:'mc',topic:'Market Failure',svgGen:'carbon',q:'In the carbon externality diagram, the gap between MSC and MPC represents:',opts:['The government tax revenue','The external cost of carbon emissions','Consumer surplus from burning fuel','The deadweight loss from carbon pricing'],ans:1,exp:'The vertical gap between MSC and MPC is the external cost — the damage to third parties from each unit of emissions that emitters do not currently pay.'},
+  {type:'mc',topic:'Market Failure',q:'The Stern Review used a discount rate of approximately:',opts:['3.5% (UK Green Book)','5-6% (Nordhaus)','1.4% (near-zero time preference)','10% (private market rate)'],ans:2,exp:'Stern used ~1.4%: zero pure time preference + small adjustments. This gives high weight to future damages, making aggressive near-term action economically justified.'},
+  // SESSION 9
+  {type:'mc',topic:'Technology Innovation',q:'The "learning rate" of a technology is defined as:',opts:['The % cost reduction per year','The % cost reduction for each doubling of cumulative production','The number of years to reach cost parity','The improvement in efficiency per £ of R&D spend'],ans:1,exp:'Learning rate = % reduction in cost for each doubling of cumulative production (capacity). PV has a learning rate of ~33-35%; onshore wind ~23%.'},
+  {type:'mc',topic:'Carbon Pricing',q:'What share of global GHG emissions was covered by carbon pricing in 2025 (World Bank)?',opts:['10%','18%','28%','40%'],ans:2,exp:'World Bank (2025): 28% of global GHG emissions now covered by carbon pricing instruments — 23% under ETS and 5% under carbon taxes.'},
+  // SESSION 10
+  {type:'mc',topic:'Energy Scenarios',q:'Which Shell 2025 scenario achieves net zero CO2 emissions by 2050?',opts:['Surge','Archipelagos','Horizon','All three scenarios'],ans:2,exp:'Horizon: citizens push for change, rapidly adopt clean technologies, politicians follow. Net zero by 2050 aiming for 1.5°C. Surge and Archipelagos do NOT reach net zero by 2050.'},
+  {type:'mc',topic:'Energy Scenarios',q:'In the ESO Pathways 2024, which pathway has the HIGHEST total energy supply (1,292 TWh)?',opts:['Holistic Transition','Electric Engagement','Hydrogen Evolution','Counterfactual'],ans:2,exp:'Hydrogen Evolution sees the most hydrogen use requiring 1,292 TWh total energy supply. Electric Engagement is lower (1,222 TWh) because electrification is more efficient than the hydrogen route.'},
+  {type:'mc',topic:'Electricity Market Reform',q:'What was the UK government\'s key decision in the 2025 REMA update?',opts:['Implement full zonal pricing (LMP)','Split the market into renewables and fossil fuel segments','Retain a single national GB-wide wholesale market','Privatise the balancing mechanism'],ans:2,exp:'Ed Miliband (2025): "We have decided to retain a single national GB-wide wholesale market and introduce an ambitious package of reform." Zonal pricing was rejected.'},
+  // SESSION 11 — Energy Storage (NEW)
+  {type:'mc',topic:'Energy Storage',q:'Approximately how much energy is stored in UK pumped hydro storage?',opts:['2.8 GWh','28 GWh','280 GWh','2,800 GWh'],ans:1,exp:'UK total pumped hydro storage capacity is 28 GWh_e. By contrast, UK gas storage is ~20,000 GWh — almost 1,000 times larger. This illustrates the challenge of replacing gas storage with electrical storage.'},
+  {type:'mc',topic:'Energy Storage',q:'How much energy does raising 1 tonne by 100 metres store (gravitational potential energy)?',opts:['0.03 kWh','0.28 kWh','2.8 kWh','28 kWh'],ans:1,exp:'PE = mgh = 1000 × 10 × 100 = 1 MJ = 10⁶/3600 Wh ≈ 0.278 kWh. This is tiny compared to a phone battery (10 Wh) or EV battery (50-100 kWh). Hence the lecture slide says "Spoiler: gravity is weak."'},
+  {type:'mc',topic:'Energy Storage',q:'What share of global energy storage capacity is pumped hydro storage (PHS)?',opts:['25%','50%','75%','95%'],ans:3,exp:'PHS accounts for approximately 95% of all installed energy storage capacity worldwide. It is the dominant proven large-scale storage technology.'},
+  {type:'mc',topic:'Energy Storage',svgGen:'storage',q:'Looking at the UK energy storage capacity chart, what was the approximate UK operational storage capacity in 2024?',opts:['0.5 GW','1.5 GW','2.5 GW','5.0 GW'],ans:2,exp:'UK operational battery storage capacity reached approximately 2,500 MW (2.5 GW) by 2024, growing rapidly from near-zero in 2016. FES 2024 projects 30-52 GW by 2050.'},
+  {type:'mc',topic:'Energy Storage',q:'What was the clearing price in the UK Capacity Market T-4 Auction 2025, and what share went to battery storage?',opts:['£40/kW/yr, 10% batteries','£60/kW/yr, 4.1% batteries','£80/kW/yr, 20% batteries','£100/kW/yr, 1% batteries'],ans:1,exp:'T-4 2025: clearing price £60/kW/yr; 4.1% (1.8 GW) battery storage; 3.8% (1.6 GW) PHS; 63% gas. Batteries have found a pathway to market via the Capacity Market.'},
+  {type:'mc',topic:'Energy Storage',q:'According to McKinsey, what share of battery storage revenues currently comes from ancillary services?',opts:['5-15%','20-50%','50-80%','85-100%'],ans:2,exp:'McKinsey: ancillary services represent 50-80% of total storage revenue today. This is expected to decline to <40% by 2030 as wholesale arbitrage grows. Revenue stacking across multiple streams is essential for business viability.'},
+  {type:'mc',topic:'Energy Storage',q:'Which new UK pumped hydro scheme has a potential capacity of up to 1,500 MW using Loch Lochy as the lower reservoir?',opts:['Cruachan 2','Dinorwig 2','Coire Glas','Ben Nevis Hydro'],ans:2,exp:'Coire Glas (Scotland): potential capacity up to 1,500 MW; lower reservoir is Loch Lochy; >500m elevation difference. Cruachan 2 is a separate project (600 MW inside Ben Cruachan).'},
+  {type:'mc',topic:'Energy Storage',q:'What is the main barrier to market entry for long-duration energy storage (LDES)?',opts:['Technology does not exist yet','Planning permission is always refused','Arbitrage value too low to incentivise investment; true system value not captured in market price','Battery costs are too high for any duration'],ans:2,exp:'No "market pull" for medium–long duration storage: arbitrage value (buying cheap, selling dear) is too low to justify investment. The true system value (avoided network upgrades, seasonal balancing) is not reflected in current market prices. This is the rationale for the cap and floor mechanism.'},
+  {type:'mc',topic:'Energy Storage',q:'What policy mechanism is the UK government proposing for long-duration electricity storage?',opts:['A CfD (Contract for Difference) similar to renewables','A cap and floor mechanism to reduce investment risk','Direct government ownership of LDES facilities','A carbon tax rebate for storage operators'],ans:1,exp:'DESNZ proposed a cap and floor mechanism: a revenue floor if wholesale revenues fall too low; a cap if revenues are too high. This reduces investment risk and enables long-duration storage to attract financing, similar to interconnector regulation.'},
+  {type:'short',topic:'Energy Storage',q:'List FOUR different flexibility options for balancing a renewables-dominated electricity system. State one advantage of energy storage compared to the other options.',ans:'Flexibility options: (1) Flexible plant (Gas CCGT/OCGT); (2) Demand side response (smart meters, heat pumps, EVs); (3) Interconnection with other countries; (4) Energy storage. Advantage of storage: does not compromise national security of supply; does not require behavioural change from consumers; can be placed anywhere across the system.',keywords:['gas','demand','interconnect','storage','security','behavioural','flexible']},
+  {type:'mc',topic:'Energy Storage',q:'In FES 2024, what range of electricity storage capacity is projected for the UK by 2050?',opts:['5-10 GW','10-22 GW','22-40 GW','30-52 GW'],ans:3,exp:'FES 2024: 30-52 GW of electricity storage by 2050, up from ~2.5 GW in 2024. This compares with FES 2017 which projected only 10 GW. The trajectory has increased in every successive FES edition.'},
+  // SESSION 12 — Energy Demand & Policy (NEW)
+  {type:'mc',topic:'Energy Efficiency',q:'According to the IEA WEO 2019, energy efficiency improvements are responsible for what share of savings in the Sustainable Development Scenario vs STEPS?',opts:['20%','40%','60%','80%'],ans:2,exp:'IEA WEO 2019: efficiency improvements responsible for 60% of end-use savings in the Sustainable Development Scenario. Almost half these savings come from industry, with major contributions from transport and buildings.'},
+  {type:'mc',topic:'Energy Efficiency',q:'What was Fatih Birol\'s (IEA) memorable description of energy efficiency policy in most nations?',opts:['A missed opportunity','An epic failure','A partial success','A work in progress'],ans:1,exp:'Fatih Birol (as IEA Chief Economist, now Executive Director) described energy efficiency as "an epic failure in most nations\' energy policy," despite modelling consistently showing it as cost-effective and critical to meeting emissions targets.'},
+  {type:'mc',topic:'Energy Efficiency Policy',q:'How many energy efficiency measures were installed annually through UK government-backed schemes a decade ago, compared to in 2021?',opts:['500,000 vs 200,000','2.3 million vs fewer than 100,000','1 million vs 500,000','5 million vs 1 million'],ans:1,exp:'Lord Deben (CCC, Nov 2022): a decade ago, 2.3 million energy efficiency measures were installed annually through Government-backed schemes. In 2021, fewer than 100,000 were installed — a 95%+ reduction.'},
+  {type:'mc',topic:'Energy Efficiency Policy',q:'Why did the UK Green Deal (2013) fail?',opts:['It was never enacted into law','Low take-up; dependent on loan rate (6.96%) and predicted savings; savings often did not materialise; axed 2015','Gas prices fell making it uneconomical','Consumer demand was too high, overwhelming the scheme'],ans:1,exp:'The Green Deal required loans to be repaid through energy bill savings (golden rule). However, the loan interest rate was high (6.96%) and predicted savings often did not materialise. Take-up was very low and the scheme was axed in 2015.'},
+  {type:'mc',topic:'Demand Flexibility',q:'The Demand Flexibility Service (DFS) first live event (January 2023) achieved approximately how much total demand reduction?',opts:['33 MWh','330 MWh','3.3 GWh','33 GWh'],ans:2,exp:'Total DFS 2022/23: 3.3 GWh reduction — described as "roughly the amount needed for everyone in Great Britain to make a mug of tea." The first event alone achieved 323-336 MW demand reduction for one hour.'},
+  {type:'mc',topic:'Rebound Effect',q:'The Khazzoom-Brookes postulate states that:',opts:['Energy efficiency improvements always reduce energy consumption','If energy prices do not change, cost-effective efficiency improvements will INCREASE economy-wide energy consumption','The rebound effect is always less than 50%','Carbon taxes eliminate the rebound effect'],ans:1,exp:'Khazzoom-Brookes (K-B): if energy prices do not change, cost-effective efficiency improvements will inevitably increase economy-wide energy consumption above what it would otherwise be — "backfire." This follows Jevons Paradox (1865): more efficient steam engines led to greater total coal consumption.'},
+  {type:'mc',topic:'Rebound Effect',svgGen:'rebound',q:'Looking at the rebound diagram, approximately what fraction of expected energy savings is lost to the economy-wide rebound effect?',opts:['10-20%','25-35%','40-50%','70-80%'],ans:2,exp:'Brockway & Sorrell (2021): economy-wide rebound effects may erode more than half (>50%) of potential energy savings. The economy-wide rebound is larger than the direct rebound (~20%) because money saved on energy gets spent on other energy-intensive goods and services.'},
+  {type:'mc',topic:'Rebound Effect',q:'In the Michigan weatherisation randomised trial, how did actual energy savings compare to projected savings?',opts:['Actual = projected','Actual was 2.5 times the projected saving','Projected savings were 2.5 times the actual savings','Actual was 5 times the projected saving'],ans:2,exp:'The Michigan weatherisation study found projected savings were approximately 2.5 times actual savings. This is a real-world example of the rebound/behavioural effects causing energy savings to fall short of engineering estimates. The social IRR was -9.5%.'},
+  {type:'mc',topic:'UK Energy Policy',q:'The UK Boiler Upgrade Scheme offers what grant toward an air source heat pump, and how does actual uptake compare to the 600,000/year target?',opts:['£2,500; on track to reach target','£5,000; halfway to target','£7,500; only 23,000 grants paid in 2024 vs 600,000 target','£10,000; target exceeded'],ans:2,exp:'The BUS offers £7,500 toward an air source heat pump. In 2024, only 23,000 grants were paid — far short of the 600,000 heat pumps/year target by 2028. The total scheme (£205m) was designed for ~90,000 upgrades — itself only 15% of the annual target.'},
+  {type:'short',topic:'Rebound Effect',q:'Explain the direct and indirect rebound effects. Why does the rebound effect matter for climate policy?',ans:'Direct rebound: efficiency makes energy services cheaper so consumption increases, offsetting some savings. Indirect rebound: money saved on energy bills is spent on other energy-intensive goods/services. For climate policy: if rebound effects erode >50% of expected savings (Brockway & Sorrell 2021), then efficiency-focused climate scenarios may be over-optimistic. The world may need to rely more on low-carbon supply, CCS, and negative emissions technologies. Economy-wide carbon pricing can mitigate rebound by keeping energy prices high.',keywords:['cheaper','service','consumption','indirect','spend','savings','erode','climate','carbon','price']},
+  {type:'mc',topic:'UK Energy Policy',q:'What is the DESNZ Clean Power 2030 target?',opts:['100% electricity from renewable sources','95%+ of electricity from low-carbon sources; no more than 5% from unabated gas','Eliminate all fossil fuels from electricity generation','Reduce electricity sector emissions by 50% vs 2020'],ans:1,exp:'Clean Power 2030: clean power meets 100% of electricity demand, with at least 95% from low-carbon sources and no more than 5% from unabated gas. NESO describes it as "a huge challenge but achievable for Great Britain by 2030."'},
+  {type:'mc',topic:'Energy Efficiency Policy',q:'Which of the following correctly describes the "landlord-tenant split incentive" barrier to energy efficiency?',opts:['Landlords and tenants disagree on heating preferences','The landlord bears the cost of improvements but the tenant receives the benefit of lower bills','Tenants pay for improvements but landlords benefit from higher property values','Energy companies benefit but neither landlords nor tenants gain'],ans:1,exp:'The split incentive problem: landlords pay for insulation, heat pumps etc. but tenants receive the benefit through lower energy bills. This misalignment of costs and benefits is a key market failure explaining underinvestment in energy efficiency in rental properties.'},
+  {type:'short',topic:'Heat Pump Economics',q:'Dr Radcliffe\'s heat pump analysis showed a negative NPV of -£5,926 over 20 years. Explain why the financial case is weak even with the £7,500 BUS grant.',ans:'The heat pump costs £13,700 installed (after £7,500 grant). Annual savings are only £600 at 400% efficiency/COP=4. With a 5% discount rate, the NPV over 20 years is -£5,926. Key issues: (1) high capital cost relative to annual savings; (2) electricity is ~4x more expensive per kWh than gas in the UK — even with COP=4 the cost advantage is small; (3) future savings are discounted heavily; (4) the electricity:gas price ratio needs to improve for the economic case to strengthen.',keywords:['capital','cost','saving','electricity','gas','price','ratio','discount','COP','efficiency']},
+];
+
+// ---- FLASHCARDS ----
+const FLASHCARDS=[
+  // Session 1 — updated
+  {term:'Energy trilemma',def:'Three competing policy goals: decarbonisation (carbon emissions), affordability (energy costs), and security of supply. Improving one typically compromises another.',svgSide:null},
+  {term:'UK electricity mix 2025',def:'Wind ~30%, Gas ~27%, Nuclear ~12%, Biomass ~9%, Solar ~6%, Imports ~14%, Coal 0%. Renewables now exceed 50% of generation.',svgSide:null},
+  {term:'UK gas import sources',def:'78% from Norway via pipeline; 17% from USA as LNG. This means UK gas prices closely track European gas markets and Norwegian production.',svgSide:null},
+  {term:'UK energy consumption by sector',def:'Transport 42% (largest), Domestic 27%, Services 16%, Industry 15%. Transport is dominated by liquid fuels (petrol, diesel, aviation).',svgSide:null},
+  {term:'Energy system capital intensity',def:'Energy infrastructure requires massive upfront investment. Hinkley Point C costs £24bn+. Long asset lifetimes (power stations 40+ years, housing 100+ years) slow the energy transition.',svgSide:null},
+  // Session 2
+  {term:'Price elasticity of demand (PED)',def:'PED = % change in Qd ÷ % change in P. Negative. |PED| > 1 elastic, < 1 inelastic, = 1 unit elastic. UK gas PED ≈ −0.1 (very inelastic).',svgSide:null},
+  {term:'Consumer surplus',def:'The area between the demand curve and the market price. Represents benefit consumers receive beyond what they pay. Shown as the triangle above p* below the demand curve.',svgSide:'sd_cs'},
+  {term:'Producer surplus',def:'The area between the market price and the supply curve. Represents extra revenue producers receive above their minimum supply price. Triangle below p* above supply curve.',svgSide:'sd_cs'},
+  {term:'Deadweight loss (DWL)',def:'Loss of welfare (CS+PS) due to a market distortion. With a tax: the triangle between the old and new equilibrium quantities. Also created by monopoly (Harberger triangle).',svgSide:'sd_tax'},
+  {term:'Tax incidence formula',def:'Buyer\'s share of tax = elasticity of supply ÷ (elasticity of supply + |PED|). Inelastic demand → consumers bear more. Inelastic supply → producers bear more.',svgSide:'sd_tax'},
+  {term:'Cross-price elasticity',def:'% change in Qd(A) ÷ % change in P(B). Positive for substitutes (e.g. gas vs heat pumps: if gas price rises, heat pump demand rises). Negative for complements.',svgSide:null},
+  {term:'Income elasticity',def:'% change in Qd ÷ % change in income. Positive for normal goods. Negative for inferior goods. Energy often has low income elasticity — use doesn\'t rise much with income.',svgSide:null},
+  {term:'Perfect competition assumptions',def:'Many firms and consumers; homogeneous product; perfect knowledge; free entry and exit. Leads to P = MC equilibrium and maximised welfare (CS + PS).',svgSide:null},
+  {term:'Law of diminishing marginal returns',def:'Adding more of a variable input to fixed inputs eventually yields smaller increments of output. Explains why MC curves slope upward in the short run.',svgSide:null},
+  // Session 3
+  {term:'Marginal cost (MC)',def:'MC = dC/dQ — extra cost of one more unit of output. Firms in perfect competition set P = MC. Monopolists set MR = MC. MC crosses AC at its minimum (MES).',svgSide:'cost'},
+  {term:'Average cost (AC)',def:'AC = C(Q)/Q = (FC+VC)/Q. U-shaped for C(Q)=f+cQ³. Falls initially as FC is spread over more output; rises when marginal returns diminish. Minimised at MES.',svgSide:'cost'},
+  {term:'Minimum efficient scale (MES)',def:'Output level where AC is minimised — where MC crosses AC from below. If MES is large relative to market demand, a natural monopoly may arise (e.g. electricity networks).',svgSide:'cost'},
+  {term:'Returns to scale',def:'Constant: AC unchanged. Increasing: AC falls with output (physical scale, financial, specialisation). Diminishing: AC rises. Important for market structure in energy.',svgSide:null},
+  {term:'Sunk cost',def:'Cost that cannot be recovered when a firm exits (e.g. specialised plant). Irrelevant to future decisions. Only future marginal costs matter when deciding whether to continue.',svgSide:null},
+  {term:'Monopoly equilibrium',def:'Monopolist sets MR = MC, then charges the demand-curve price. Since MR < P, this means P > MC. Output is below competitive level → DWL (Harberger triangle). Profit = (pm − MC) × qm.',svgSide:'mono'},
+  {term:'Kinked demand curve',def:'Oligopoly model explaining sticky prices: rivals match price cuts (so firm loses nothing by cutting) but not price rises (so firm loses market share). Creates a gap in MR where MC can vary without changing price.',svgSide:null},
+  {term:'Cournot competition',def:'Firms choose quantities simultaneously, each treating rivals\' output as fixed. They act as monopolist over residual demand. Nash equilibrium is where reaction functions intersect.',svgSide:'cournot'},
+  {term:'Nash equilibrium',def:'Strategy profile where no player can improve their payoff by changing strategy unilaterally. In Cournot: p=29−2(q1+q2), c=5qi → Nash at q1=q2=4, p=21.',svgSide:'cournot'},
+  {term:'Cobra effect',def:'Unintended consequences of incentives: Delhi offered a bounty for dead cobras → people bred cobras → bounty cancelled → snakes released → more cobras. A policy achieved the opposite of its goal.',svgSide:null},
+  // Session 4
+  {term:'Net present value (NPV)',def:'NPV = Σ payment_t × (1+r)^{−t}. Sum of all project cash flows discounted to today. Invest if NPV > 0. Choose the project with the highest NPV when comparing alternatives.',svgSide:null},
+  {term:'Internal rate of return (IRR)',def:'The discount rate at which NPV = 0. Invest if IRR > WACC. Excel: =IRR(range). A project with IRR=12% is attractive if the firm\'s cost of capital is 8%.',svgSide:null},
+  {term:'WACC',def:'Weighted average cost of capital — blended required return on debt and equity. Used as the discount rate in NPV. Reflects investment risk. Higher risk → higher WACC → higher hurdle rate.',svgSide:null},
+  {term:'LCOE',def:'Levelised cost of electricity = NPV of total costs / NPV of generation = Σ(TCn/(1+r)^n) / Σ(Gn/(1+r)^n). Unit: £/MWh. 2025: solar ~£60, onshore wind ~£60, offshore ~£100/MWh. Gas CCGT: £420 at 5% load, £80 at 93% load.',svgSide:null},
+  {term:'Hurdle rate',def:'Minimum IRR for investment to proceed. Reflects WACC + risk premium. Solar PV 5.0% (low risk), Offshore wind 8.3%, Floating offshore 9.8%, Geothermal 18.8% (high risk/unproven).',svgSide:null},
+  {term:'Screening curve',def:'Plots total cost (£/kW-year) vs utilisation for different plant types. Peaking: low FC high VC — cheapest for few hours. Baseload: high FC low VC — cheapest for many hours. Identifies optimal mix.',svgSide:'screen'},
+  {term:'Load-duration curve',def:'Shows the number of hours per year that electricity demand exceeds a given level. Combined with the screening curve, determines optimal capacity of each generation type (baseload/mid-merit/peaking).',svgSide:null},
+  {term:'Payback period',def:'Payback = initial cost ÷ net revenue per period. Simple but ignores time value of money and cash flows after payback. Example: £100m cost ÷ £5m/month = 20 months.',svgSide:null},
+  {term:'Baseload vs peaking plants',def:'Baseload (nuclear, coal): high FC, low VC — run most hours. Peaking (open-cycle gas): low FC, high VC — run only at demand peaks. Mid-merit: intermediate. LCOE depends heavily on utilisation.',svgSide:'screen'},
+  {term:'CCGT efficiency',def:'Combined cycle gas turbines achieve ~60% thermal efficiency by using both gas and steam turbines. This makes CCGT the preferred dispatchable low-carbon-complementary technology in the UK.',svgSide:null},
+  // Session 5
+  {term:'Merit order / supply stack',def:'Generators dispatched in order of increasing SRMC: renewables (~£0-5) first, then nuclear (~£20), CCGT (~£60), peaking gas (~£120). The marginal generator sets the market price for all.',svgSide:'merit'},
+  {term:'Merit order effect',def:'As more near-zero SRMC renewables enter, they push conventional generators up the merit order, reducing the frequency that expensive plant sets the price — depressing average wholesale electricity prices.',svgSide:'merit'},
+  {term:'British Electricity Trading Arrangements (BETTA)',def:'1. Generators/suppliers trade freely (forward/spot). 2. Notify National Grid of physical positions. 3. National Grid runs balancing mechanism (gate closure = 1 hr before). 4. Imbalance settlement.',svgSide:null},
+  {term:'Gate closure',def:'Point 1 hour before delivery when participants must submit final physical notifications. After this, the System Operator (NESO) manages balance through the balancing mechanism.',svgSide:null},
+  {term:'Nodal pricing',def:'Electricity price at each node reflects the system marginal cost plus the cost of transmitting power to that node (losses + congestion). Used in USA (PJM, New York, New England). UK uses TNUoS instead.',svgSide:null},
+  {term:'Three-node network example',def:'Generators A (£40/MWh) and B (£60/MWh). Meshed: 2/3 power takes shorter route. With congestion, nodal price = £50/MWh (average). Shadow cost μ = £30; system lambda λ = £50.',svgSide:null},
+  {term:'TNUoS and BSUoS',def:'TNUoS (Transmission Network Use of System): locationally differentiated annual charge based on long-run transmission costs. BSUoS (Balancing Services Use of System): energy-based, non-locational, recovers system operator costs.',svgSide:null},
+  {term:'Lagrangian dispatch optimisation',def:'Min C = aqA² + bqB² s.t. qA+qB=D. Optimal: qA=Db/(a+b), qB=Da/(a+b). Shadow price λ = marginal cost of generation. Example: D=260MW → λ=£10.67/MWh, qa=112MW, qb=148MW.',svgSide:null},
+  {term:'Contracts for Difference (CfD)',def:'Generator receives strike price regardless of market. If market < strike: government (LCCC) pays the difference. If market > strike: generator pays back. Provides long-term revenue certainty for capital-intensive renewables.',svgSide:null},
+  {term:'CfD strike prices — offshore wind',def:'AR1 (2015): £115/MWh; AR2 (2017): £58; AR3 (2019): £40; AR4 (2022): £37.35; AR5 (2023): no award; AR6 (2024): £54-59; AR7 (Jan 2026): £91/MWh (2024 prices). All for 20-year contracts.',svgSide:null},
+  {term:'Capacity market',def:'"Insurance against blackouts" — reverse auction procuring capacity to meet reliability standard (3hrs/yr loss of load). 2023 T-4 clearing price: £63/kW/yr; 68% gas, 16% interconnector, 5% storage.',svgSide:null},
+  {term:'UK renewables 2024 record',def:'144 TWh from renewables = 50.4% of UK electricity demand. As share of gross final energy consumption: 16.2%. Offshore wind the largest contributor, growing fastest since 2010.',svgSide:null},
+  // Session 6
+  {term:'Natural monopoly',def:'Single firm serves the market at lower cost than two or more firms — due to economies of scale and non-duplication. Electricity networks are the main example. Requires economic regulation.',svgSide:'cost'},
+  {term:'Rate-of-return regulation',def:'US model: companies allowed a fair rate of return on investment. Revenues set to cover costs. Input-focused. Creates "gold-plating" incentive (invest more to earn more). Legalistic rate cases.',svgSide:null},
+  {term:'RPI-X regulation',def:'UK model (Littlechild, 1983): prices can rise with RPI minus efficiency factor X. Output-focused. Decouples tariffs from costs → strong efficiency incentive. Firm keeps savings until next review.',svgSide:null},
+  {term:'RIIO model',def:'Revenue = Incentives + Innovation + Outputs. Ofgem\'s current network price control framework. Builds on RPI-X. Ties revenues to delivery of outputs (e.g. connections, reliability, low carbon).',svgSide:null},
+  {term:'Vertical separation in electricity',def:'Prevents integrated firm favouring own generation in network decisions. Three forms: (a) Legal separation (subsidiary); (b) Ownership separation (sold off); (c) Independent System Operator (separate body runs assets).',svgSide:null},
+  {term:'UK electricity privatisation timeline',def:'1987: gas privatised. Feb 1988: White Paper — CEGB to be split. Nov 1989: Nuclear Electric formed. 31 Mar 1990: Vesting Day — National Power, PowerGen, NGC created. 1990s: dash for gas.',svgSide:null},
+  {term:'"Dash for gas" (1990s)',def:'RECs built gas-fired CCGT plants using cheap North Sea gas, competing with National Power/PowerGen duopoly. Led to effective re-integration vertically as RECs bought generation and vice versa.',svgSide:null},
+  {term:'NETA (2001)',def:'New Electricity Trading Arrangements: replaced the mandatory Pool with voluntary bilateral markets. Made trading more flexible. Extended to Scotland as BETTA in 2005.',svgSide:null},
+  {term:'Glide path (RPI-X)',def:'Revenue trajectory during a regulatory period: P0 cut at start, then firm cuts costs faster than X and earns extra profits. At next review, prices cut again — gains competed away over time.',svgSide:null},
+  {term:'2016 CMA Energy Market Investigation',def:'Found: no market power exploitation; prices reflected costs; no excessive profits; modest benefit from vertical integration. BUT: customer disengagement exploited; regulations restricted competition.',svgSide:null},
+  {term:'Smart meter CBA (UK, 2019)',def:'NPV = £6bn. Benefits: consumer £7.6bn, supplier £8.1bn, demand shifting £1.4bn, network £0.4bn. Costs dominated by in-premises equipment (56%). Discount rate 3.5% (Green Book).',svgSide:null},
+  {term:'UK energy RD&D investment',def:'Peaked ~£900m/yr early 1980s (dominated by nuclear). Collapsed post-privatisation to <£100m by late 1990s as market had no incentive to fund R&D. Recovering since 2010 with renewables focus.',svgSide:null},
+  {term:'Newbery & Pollitt (1997)',def:'Estimated that UK electricity restructuring delivered ~5% per annum cost savings vs the CEGB. However, consumers and government lost out, while producers gained more than the cost reductions.',svgSide:null},
+  // Session 7 — Oil Supply
+  {term:'McKelvey box (oil reserves)',def:'Classification of oil resources: Proved (1P, 90% recovery probability), Probable (2P, 50%), Possible (3P, 10%). Commercial vs sub-commercial. Discovered vs undiscovered. Most data uses 1P.',svgSide:null},
+  {term:'URR (Ultimately Recoverable Resource)',def:'Total oil that will ever be recovered. USGS 2000: 3,345 Gb. IEA 2008: 3,577 Gb. Subjective and contested — drives uncertainty in peak oil estimates.',svgSide:null},
+  {term:'R/P ratio',def:'Reserve-to-Production ratio = proved reserves ÷ annual production. Global: ~50 years. A static depletion measure, NOT a prediction — actual depletion depends on future discoveries and demand changes.',svgSide:null},
+  {term:'Hubbert Curve / Peak Oil',def:'Hubbert (1956): production from oil fields follows a bell curve. Correctly predicted US peak at 1970. UKERC (2009): world peak estimated between 2009 and 2031. Shale revolution challenged supply-side peak; concern now is demand-side peak.',svgSide:null},
+  {term:'OPEC proved reserves (2020)',def:'OPEC countries hold 72% of world proved reserves. Top holders: Venezuela 18%, Saudi Arabia 17%, Canada 10%, Iran 9%, Iraq 8%, UAE 6%, Russia 6%, Kuwait 6%. Production share: only 34%.',svgSide:null},
+  {term:'World oil production (2024)',def:'~97 million barrels/day. USA: 21% (largest). Russia: 11%. Saudi Arabia: 11%. OPEC: 34%. OPEC+: 45%. UK: ~1% (North Sea declining). Middle East exports mainly to Asia (316 Mt).',svgSide:null},
+  {term:'Russian oil trade shift (2020→2024)',def:'Russian pipeline oil to Europe fell sharply after Ukraine invasion (EU sanctions). Russian exports to India: 2.6 → 87.5 million tonnes. China also increased Russian imports. Oil redirected to Asia.',svgSide:null},
+  {term:'IEA World Energy Outlook 2025 scenarios',def:'CPS (Current Policies): oil rises to ~115 mb/d, ~3°C by 2100. STEPS (Stated Policies): oil peaks ~100 mb/d then declines, ~2.5°C. NZE (Net Zero): rapid decline, 1.5°C pathway.',svgSide:null},
+  // Session 7 — Hotelling and OPEC
+  {term:'Hotelling Rule',def:'Price of an exhaustible resource must rise at rate r per period in competitive markets. Producer is indifferent between selling now and later when p(future) = (1+r)·p(now). Price path rises until it hits the backstop technology price.',svgSide:'hotelling'},
+  {term:'Backstop technology',def:'A substitute whose price caps the exhaustible resource price (e.g. solar power caps oil price). As oil price rises toward backstop, demand switches. Backstop price sets the terminal condition in Hotelling model.',svgSide:'hotelling'},
+  {term:'Green paradox',def:'A future carbon tax may incentivise resource owners to extract more oil NOW (before the tax raises the backstop price), potentially increasing near-term emissions. Counterargument: real-world market imperfections limit this effect.',svgSide:null},
+  {term:'OPEC prisoners\' dilemma payoffs',def:'Both low output: £50bn each. One cheats (high): cheater gets £80bn, other gets £1bn. Both high: £10bn each. Dominant strategy = produce high → Nash at (10,10). Collusive optimum (50,50) is not self-enforcing.',svgSide:'opec'},
+  {term:'Grim strategy (OPEC)',def:'If Iran raises output once, Saudi Arabia keeps output high forever. Sustainable if discount factor δ > 3/7 ≈ 0.43. Derivation: 80+10δ/(1-δ) < 50/(1-δ) → δ > 3/7.',svgSide:null},
+  {term:'Tit for tat strategy',def:'Mirror opponent\'s previous move. Start cooperating (low output); if rival cheats, retaliate next period; if rival co-operates again, revert to co-operation. Encourages sustained cartel cooperation.',svgSide:null},
+  {term:'OPEC history',def:'Founded 1960: Iran, Iraq, Kuwait, Saudi Arabia, Venezuela. Kept prices high 1973-1986. Later members: Libya, UAE, Algeria, Nigeria. Leavers: Gabon (1995), Indonesia (2009), Angola (2014), Qatar (2019).',svgSide:null},
+  {term:'"New economics of oil" (BP, 2015)',def:'Spencer Dale challenged four core beliefs: (1) oil is exhaustible (shale challenged this); (2) demand/supply are steep (EVs changing this); (3) oil flows east to west (US now exporter); (4) OPEC stabilises the market.',svgSide:null},
+  // Session 8 — Gas, Coal, Market Failure
+  {term:'World gas market structure',def:'Capital-intensive; pipelines = major sunk cost → long-term contracts. LNG enabled geographic arbitrage. US shale revolution: production doubled 2000-2024. World production ~4 trillion m³/yr (2023).',svgSide:null},
+  {term:'European gas supply shift (2018→2023)',def:'Russian pipeline: 195 → 50 billion m³ (fell sharply post-Ukraine). US LNG: 5 → 75 billion m³ (largest new source). Norway stayed steady at ~110 billion m³. Diversification accelerated by energy crisis.',svgSide:null},
+  {term:'World gas prices divergence',def:'UK/Europe/Japan gas peaked at ~$25/Mbtu in 2022. US prices stayed ~$2-5/Mbtu due to shale abundance and lack of LNG export capacity at the time. Markets partially integrated via LNG spot cargoes.',svgSide:null},
+  {term:'Global coal facts (2023-24)',def:'China: 52% of world production and dominant consumer. Global coal demand hit record high in 2022; IEA said it would stay near records in 2023. US coal fell sharply post-2010 as cheap shale gas substituted. UK: near-zero coal by 2024.',svgSide:null},
+  {term:'Global energy mix 2024',def:'Primary energy: Oil 34%, Coal 28%, Gas 25%, Nuclear 5%, Renewables 5%, Hydro 3%. Four consecutive years of record fossil fuel demand. "World remains in energy addition mode." — Andy Brown, EI President 2025.',svgSide:null},
+  {term:'Climate change as externality (Stern)',def:'GHG emissions impose costs not paid by emitters. Four distinguishing features: global; long-term and persistent; pervasive uncertainty; risk of irreversible major change. "Market failure on the greatest scale the world has seen."',svgSide:null},
+  {term:'Social Time Preference Rate (STPR)',def:'UK Green Book: 1.5% (time preference) + 2% (consumption growth adjustment) = 3.5%. Used for public sector CBA. Reflects how much society discounts future welfare relative to present.',svgSide:null},
+  {term:'Stern Review discount rate',def:'Stern used ~1.4%: zero pure time preference + 0.1% risk + 1.3% growth × utility parameter. Much lower than 3.5% Green Book rate. Result: high NPV of climate damages → aggressive action justified. Nordhaus (~5-6%) implies less action.',svgSide:null},
+  {term:'Pigou tax (carbon pricing)',def:'Tax set equal to the marginal external damage (social cost of carbon). Forces emitters to face full social cost. Corrects externality at source. Raises revenue. Gives price certainty; leaves quantity uncertain.',svgSide:'carbon'},
+  {term:'Cap-and-trade / ETS',def:'Set a cap on total emissions; issue permits; let firms trade. Market determines price. Gives quantity (emission) certainty; price uncertain. EU ETS is main example. UK left EU ETS in 2021, created UK ETS.',svgSide:null},
+  {term:'Climate policy milestones',def:'1992: Rio/UNFCCC. 1997: Kyoto Protocol. 2000: UK 60% CO2 target. 2006: Stern Review. 2009: UK 80% target. 2015: Paris Agreement (1.5/2°C). 2019: UK Net Zero by 2050.',svgSide:null},
+  {term:'Public goods and free-rider problem',def:'Non-rival + non-excludable → free-rider problem → underprovision in free market → government intervention required. Climate system = global public good. Is small-scale renewables free-riding on grid infrastructure?',svgSide:null},
+  // Session 9 — Technology Innovation
+  {term:'Learning rate / progress ratio',def:'Learning rate (LR): % cost reduction per doubling of cumulative production. Progress ratio (PR): price as fraction of previous level after doubling. LR = 1 - PR. PV LR ≈ 33-35%; Onshore wind LR ≈ 23%.',svgSide:null},
+  {term:'IRENA learning rates (LCOE, 2010-2023)',def:'CSP: -37%; onshore wind: -44%; offshore wind: -22%; solar PV: -39%. LCOE learning rates are higher than installed cost learning rates because O&M and financing also improve.',svgSide:null},
+  {term:'Virtuous spiral of technology adoption',def:'More adoption → greater production volume → lower costs (economies of scale, learning by doing) → further adoption. Four sources (Arthur 1994): network externalities; adaptive expectations; economies of scale; learning effects.',svgSide:null},
+  {term:'Learning-by-doing subcategories (Schaeffer 2004)',def:'(1) Learning-by-researching (R&D creates knowledge); (2) Learning-by-doing (production experience); (3) Learning-by-using (user feedback to manufacturers); (4) Learning-by-interacting (supply chain and ecosystem spillovers).',svgSide:null},
+  {term:'Justifications for renewable energy support',def:'(1) Carbon emission savings; (2) Delays fossil fuel depletion; (3) Learning externality — buyers don\'t capture all benefits of driving cost reductions; (4) Wider economic/green growth benefits.',svgSide:null},
+  {term:'Why costs can rise despite learning',def:'Market growth is necessary but not sufficient for cost reduction. Countervailing factors: fuel price shocks (2008-2011 gas/coal); supply chain bottlenecks; materials cost surges; nuclear design changes. Offshore wind costs rose 2021-2023 due to inflation and supply chains.',svgSide:null},
+  {term:'Carbon pricing coverage (World Bank 2025)',def:'28% of global GHG emissions now covered by carbon pricing: 23% ETS, 5% carbon tax. EU ETS covers electricity, steel, cement, petrochemicals (~40% of EU emissions). EU carbon price peaked at €100/tCO2 (Feb 2023).',svgSide:null},
+  {term:'UK Carbon Border Adjustment Mechanism (CBAM)',def:'Planned from 1 January 2027. Ensures carbon-intensive imports (steel, cement, chemicals etc.) face a carbon price equivalent to that paid by UK manufacturers. Prevents "carbon leakage" where production shifts to less regulated countries.',svgSide:null},
+  {term:'Stern\'s three solutions',def:'(1) Price on carbon (tax/ETS): establish carbon price as essential foundation. (2) Technology policy: R&D through to demonstration and early deployment. (3) Remove barriers to behavioural change: information, transaction costs, organisational inertia.',svgSide:null},
+  {term:'Marginal Abatement Cost Curve (MACC)',def:'Ranks emissions reduction measures by cost (£/tCO2e). Around half of measures expected to be cost-saving by 2050 (CCC 6th Carbon Budget), primarily decarbonising electricity and surface transport. Advantages: strategic; efficiency. Limitations: baseline uncertainty; technology interactions.',svgSide:null},
+  {term:'EU ETS phases',def:'Phase 1-2 (2005-2012): permits mostly given free; surplus built up after 2008 crisis. Phase 3 (2013+): single EU-wide cap; 40% auctioned; emissions -21% vs 2005. Price rose from ~€5 to €100 (Feb 2023) then back to €60-80.',svgSide:null},
+  {term:'UK ETS and relinking proposal',def:'UK left EU ETS post-Brexit; UK permits trade at significant discount. Jan 2025: PM Starmer proposed relinking UK and EU ETS. Frontier Economics: relinking could avoid foregone revenue of up to £8bn (2025-2030) and deepen market liquidity.',svgSide:null},
+  {term:'Carbon leakage',def:'Production moves from a country with strict carbon policy to one with less stringent policy, displacing emissions rather than reducing them globally. CBAM is designed to prevent this by applying an equivalent carbon price to imports.',svgSide:null},
+  {term:'Social cost of carbon (SCC)',def:'Monetised damage from emitting 1 additional tonne of CO2. DECC (2009): ~£51/tCO2, rising to £268/tCO2 by 2100. Stern (2006): ~£85/tCO2. Nordhaus: lower estimates. Used to set the optimal Pigouvian tax.',svgSide:null},
+  {term:'Weitzman price vs quantity instruments',def:'Under uncertainty: prices (tax) preferable when marginal costs are steeper than marginal benefits. Quantities (cap) preferable when marginal benefits rise faster than costs. For climate: risk of tipping points argues for quantity certainty (cap).',svgSide:null},
+  {term:'Stern Review economic estimates',def:'Action costs 1% of GDP (discounted); inaction costs 5% of GDP; catastrophic risk scenarios up to 20% of GDP. Cambridge Econometrics (2014): meeting GHG targets → +1.1% GDP by 2030, 190,000 extra jobs, +£565/household/year income.',svgSide:null},
+  {term:'Net zero investments (CCC 6th Carbon Budget)',def:'In-year capital investment ramps to £50bn/yr by 2030 (from £10bn in 2020). By 2050, aggregate operating cost savings roughly equal annual investment requirements. Around half of emission reduction measures are cost-saving by 2050.',svgSide:null},
+  {term:'Clean Development Mechanism (CDM)',def:'Kyoto Protocol mechanism: allows developed countries to earn credits from emission-reduction projects in developing countries. Additionality requirement: reductions must be additional to what would have happened anyway. Used in EU ETS Phase 1-2.',svgSide:null},
+  {term:'IRENA learning rates — installed cost (2010-2023)',def:'CSP: -21%; onshore wind: -23%; offshore wind: -14%; solar PV: -33%. Lower than LCOE learning rates because LCOE also captures O&M and financing improvements.',svgSide:null},
+  {term:'Why forecast costs were too high',def:'UK govt offshore wind forecasts in 2013 were much higher than actual 2020 outcomes. Reasons: unanticipated cost reductions; reduction in hurdle rates; supply chain maturation; progress occurring faster than estimated.',svgSide:null},
+  {term:'Four classes of increasing returns (Arthur 1994)',def:'(1) Network externalities: value rises as more people use the technology; (2) Adaptive expectations: leading design reduces consumer uncertainty; (3) Economies of scale: unit costs fall with volume; (4) Learning effects: costs fall with cumulative experience.',svgSide:null},
+  // Session 10 — Scenarios
+  {term:'Scenario typology (Mander)',def:'Five dimensions: (1) Backcasting vs forecasting; (2) Qualitative vs quantitative; (3) Normative vs descriptive; (4) Expert vs participatory; (5) Whole system vs sector-specific.',svgSide:null},
+  {term:'Shell Scenarios purpose',def:'"Shell has been developing possible visions of the future since the early 1970s, helping leaders, academics, governments and businesses to explore ways forward and make better decisions." Scenarios ask "what if?" — not predictions.',svgSide:null},
+  {term:'Shell 2025 scenarios — three futures',def:'Surge: economic growth/AI-driven electrification, CO2 falls from 2030s but no net zero by 2050. Archipelagos: national self-interest, transition continues but no net-zero focus. Horizon: citizen-driven change, net zero by 2050 (1.5°C target).',svgSide:null},
+  {term:'Shell five key messages (2026)',def:'(1) Electrification and renewables accelerate in all sectors; (2) AI reshapes energy system; (3) Carbon management (CCS, DAC, land use) essential; (4) Low-carbon fuels expand; (5) Fossil fuels lose market share but net-zero timing highly uncertain.',svgSide:null},
+  {term:'IEA NZE four pillars',def:'(1) Low-emissions electricity + electrification of end-uses (~40% of end-use reductions by 2050); (2) Energy efficiency; (3) Low-emissions fuels: hydrogen, biofuels, CCUS; (4) Methane emission reductions.',svgSide:'scenario'},
+  {term:'IEA WEO 2025 — STEPS vs CPS on demand',def:'Both scenarios see continued energy demand increases to 2050, led by India and Southeast Asia. Coal and oil demand peak ~2030 in STEPS (slower uptake of renewables/EVs in CPS keeps demand higher for longer).',svgSide:null},
+  {term:'IEA NZE — electricity sector',def:'Rapid growth in all low-emissions sources enables power sector to reach net zero by early 2040s. Storage: 1,700 GW (2035) → 3,400 GW (2050). Grids: double by 2035. Nuclear: 60 → 120 GW (2024→2050).',svgSide:'scenario'},
+  {term:'ESO Pathways 2024 — four routes',def:'Holistic Transition (HT): mix, 1,218 TWh. Electric Engagement (EE): mainly electrified, 1,222 TWh. Hydrogen Evolution (HE): hydrogen focus, 1,292 TWh. Counterfactual (CF): misses net zero, 1,423 TWh (gas-heavy).',svgSide:null},
+  {term:'ESO pathway — all net-zero pathways share',def:'All net-zero pathways: (1) total energy demand FALLS due to efficiency and electrification; (2) unabated natural gas use reaches near-zero by 2050; (3) offshore wind reaches ~100 GW; (4) generation capacity rises rapidly to meet electrified heat/transport.',svgSide:null},
+  {term:'ESO Electric Engagement pathway (2050)',def:'Electricity supplies 66% of overall energy demand in 2050. Electricity generated increases by 616 TWh but overall demand falls 484 TWh vs today (consumer engagement, insulation, efficiency). Hydrogen provides 19% (industry, aviation, shipping).',svgSide:null},
+  {term:'ESO Hydrogen Evolution pathway (2050)',def:'Hydrogen supplies 30% of overall energy needed in 2050 across all sectors. Natural gas still used for hydrogen production but abated through CCS. Total supply 1,292 TWh. National hydrogen network supplying all sectors.',svgSide:null},
+  {term:'ESO Counterfactual pathway',def:'Misses net zero. Heavy reliance on gas across all sectors (power, heat, industry). Total energy supply highest at 1,423 TWh. Least renewable capacity. EV uptake slower. Insulation improvements but heavy gas use remains.',svgSide:null},
+  {term:'Offshore wind challenge (ESO)',def:'All net-zero pathways require ~100 GW offshore wind by 2050 (from ~15 GW in 2024). Continued growth requires significant infrastructure investment to move power from coastal landing points to demand centres. Supply chain and grid connection times are key bottlenecks.',svgSide:null},
+  {term:'Scenarios — issues and limitations',def:'(1) Limited by model inputs and assumptions; (2) Different messages from different organisations with different objectives; (3) Limited insight into the transitions required; (4) Communicating messages effectively is critical; (5) Community needs greater interaction.',svgSide:null},
+  {term:'IEA Birol (Feb 2026)',def:'"Fracturing in global political order reflected on energy scene. Different countries choosing different paths." US rowing back climate pledges; China and Europe pushing forward with electrification. Climate change "moving down international policy agenda."',svgSide:null},
+  {term:'China aluminium and carbon policy (Feb 2026)',def:'China\'s aluminium smelters relocating from northern rust belt to renewables-rich south-west. Investments in solar and wind reducing carbon emissions by two-thirds. EU and UK CBAMs (from 2027) mean imported aluminium faces carbon levy.',svgSide:null},
+  // Session 10 — REMA
+  {term:'REMA (Review of Electricity Market Arrangements)',def:'UK government consultation (since March 2023) to reform electricity markets for a renewables-dominated system. Four challenges: (1) consumer value; (2) investment pace; (3) transitioning from gas; (4) operational optimisation.',svgSide:null},
+  {term:'Zonal pricing (LMP) debate in REMA',def:'Proposal: split GB into price zones reflecting local supply/demand balance. Pros (Octopus): unlocks flexibility, locational investment signals. Cons (UKERC): risks decarbonisation by 2035. Government decision (2025): REJECTED zonal pricing; retained national market.',svgSide:null},
+  {term:'REMA 2025 outcome',def:'Government retained single national GB-wide wholesale market. No zonal pricing. Instead: "reformed national pricing" to provide transparent locational investment signals for new generation. Ed Miliband: "decisive step forward."',svgSide:null},
+  {term:'REMA Challenge 4 — locational signals',def:'Challenge 4: how to send locational investment and operational signals to generators. Options: (a) Zonal/nodal pricing (LMP); (b) Alternative options under national pricing — strengthen TNUoS/BSUoS signals. Decision (2025): national pricing retained.',svgSide:null},
+  {term:'Low-carbon flexible technologies (REMA)',def:'REMA Challenge 3: minimum procurement target for low-carbon flexible technologies — battery storage, demand response, interconnectors. These provide system flexibility without carbon emissions, replacing gas peakers.',svgSide:null},
+  {term:'UK electricity market reform (2013 EMR)',def:'Four pillars: (1) Contracts for Difference (CfD) for low-carbon generation; (2) Capacity Market for security of supply; (3) Emissions Performance Standard; (4) Carbon Price Floor. Evolved into REMA post-2023.',svgSide:null},
+  {term:'Octopus Energy on REMA',def:'"The market has a major blind spot: it doesn\'t provide a strong incentive for low-carbon energy flexibility. It\'s unlikely to meet its aims until it does." Supports locational pricing and dynamic distribution network pricing for congestion.',svgSide:null},
+  {term:'UKERC/UCL on REMA zonal pricing',def:'UKERC: LMP has potential to put 2035 decarbonisation commitment at significant risk. UCL proposal: split wholesale market into two — one for renewables (zero/low marginal cost economics) and one for conventional fossil-fuel generators.',svgSide:null},
+
+  // ===== SESSION 11 FLASHCARDS (NEW) =====
+  {term:'Role of energy storage',def:'Buffer between production and consumption. Functions: balances supply and demand; affects prices; reduces system cost. As renewables grow, storage must handle variability from seconds (frequency) to seasons (solar/wind patterns).',svgSide:null},
+  {term:'UK gas storage vs electricity storage',def:'UK gas storage: ~20,000 GWh total (Stublach alone: 450m m³ for 300,000 homes/year). UK pumped hydro: only 28 GWh_e. Gas intrinsic storage in the network provides ~116 GW peak flexibility — electricity grid only ~16 GW in 3 hours.',svgSide:null},
+  {term:'Flexibility options comparison',def:'(1) Flexible gas plant (default, but carbon); (2) Demand side response (needs smart meters, behaviour change); (3) Interconnection (merchant basis, not always available); (4) Energy storage (no carbon, no behaviour change needed, can be anywhere).',svgSide:null},
+  {term:'Gravitational potential energy — calculation',def:'PE = mgh. 1 tonne raised 100 m: PE = 1000 × 10 × 100 = 1 MJ = 0.28 kWh. Compare: AA battery 3 Wh, phone 10 Wh, EV 50-100 kWh. "Gravity is weak" — mass required is enormous.',svgSide:null},
+  {term:'Pumped hydro storage (PHS)',def:'Water pumped to upper reservoir when electricity cheap; released through turbine when expensive. 95% of all installed global energy storage. UK: 28 GWh_e. New: Coire Glas (1,500 MW), Cruachan 2 (600 MW, inside Ben Cruachan).',svgSide:null},
+  {term:'Battery storage technologies',def:'Li-ion: driven down by EV sector; 2-4 hours; good for frequency response, short reserve, capacity market. Flow batteries: longer duration. Sodium sulphur, CAES, LAES: emerging. Each technology suited to different timescale challenges.',svgSide:null},
+  {term:'FES energy storage trajectory',def:'FES 2017: 10 GW. FES 2018: 10-30 GW. FES 2019: 15-30 GW. FES 2020: 20-40 GW. FES 2022: 22-52 GW. FES 2024: 30-52 GW. Projections have grown in every edition as need becomes clearer.',svgSide:'storage'},
+  {term:'FES 2024 — storage necessity',def:'"Electricity storage is necessary across ALL our net zero pathways to help balance the grid and ensure security of supply." 2-4 hour storage for daily balancing; long-duration storage for extended periods of low renewables.',svgSide:'storage'},
+  {term:'Revenue stacking for batteries (McKinsey)',def:'Wholesale arbitrage: 20-50% of revenue today, rising to >60% by 2030. Ancillary services: 50-80% today, declining to <40% by 2030. Capacity payments: 20-30% in selected markets. Multiple streams essential for investment case.',svgSide:null},
+  {term:'Capacity Market T-4 2025 (battery storage)',def:'Clearing price: £60/kW/yr. Battery storage: 4.1% (1.8 GW). PHS: 3.8% (1.6 GW). CAES: 31 MW. Gas still dominates at 63%. Grid-scale batteries have found market routes WITHOUT specific storage subsidies.',svgSide:null},
+  {term:'NESO ancillary services for batteries',def:'Frequency Response: Static Firm, Dynamic DC/DM/DR, Mandatory MFR. Reserve: Short-term Operating, Balancing, Quick Reserve. Stability markets. Voltage services. Restoration. Batteries well-suited to fast frequency response.',svgSide:null},
+  {term:'Barriers to energy storage deployment',def:'(1) Technology cost/performance vs alternatives; (2) Uncertainty of future value (depends on system mix); (3) Revenue stacking difficult to establish commercially; (4) True system value not in market price; (5) Regulatory restrictions (double-paying levies); (6) Societal acceptance not yet tested.',svgSide:null},
+  {term:'System value of flexibility (UK govt 2021)',def:'Illustrative system costs in 2050: high flexibility scenario ~£10bn/year LOWER than low flexibility scenario. By 2050: ~60 GW total flexible capacity needed, with ~30 GW combined storage + DSR and 27 GW interconnection at lowest system cost.',svgSide:null},
+  {term:'Long-Duration Energy Storage (LDES) policy',def:'REMA: "new markets may need to be introduced to bring forward long duration storage." Cap and floor mechanism: revenue floor if revenues too low, cap if too high. Reduces investment risk. DESNZ competition: £37m for 3 demos, £30m for 3 prototype demos.',svgSide:null},
+  {term:'Tesla Powerwall economics (UK)',def:'13.5 kWh, 90% efficient; installation ~£10,000; electricity ~30p/kWh → stores £4.50. Charging from own PV and cycling daily: payback ~7 years BUT not discounted, PV not truly free, may lack demand at peak. NPV likely negative.',svgSide:null},
+  {term:'Germany domestic battery storage',def:'300,000 home battery systems by 2020; 70% of European home battery market. Key drivers: KfW low-interest loans (up to 100% CAPEX), time-of-use tariffs, regulatory changes enabling business case. Shows what is possible with right policy.',svgSide:null},
+  {term:'Britishvolt — case study',def:'Planned £3.8bn EV battery factory in Cambois, Northumberland. Went into administration January 2023. Bought by Recharge Industries (Australian) February 2023 — plans for energy storage batteries. Those plans also collapsed April 2024. Illustrates difficulty of UK battery manufacturing.',svgSide:null},
+  {term:'UK industrial energy prices (2025)',def:'UK non-domestic electricity prices: 26.70p/kWh (Jan-Jun 2025) — highest in EU14, even after falling 3%. Non-domestic gas: 4.82p/kWh, 5th cheapest. CBI: 40% of firms cut investment due to high energy costs. British Industry Supercharger: 60% network charge reduction.',svgSide:null},
+
+  // ===== SESSION 12 FLASHCARDS (NEW) =====
+  {term:'Energy efficiency — the "epic failure"',def:'Fatih Birol (IEA): energy efficiency is "an epic failure in most nations\' energy policy." Despite modelling showing it is cost-effective and responsible for 60% of savings needed (IEA WEO 2019), policy implementation has been weak.',svgSide:null},
+  {term:'Barriers to energy efficiency',def:'(1) Financial: access to capital, high upfront costs; (2) Hidden costs: transaction costs; (3) Lack of information; (4) Risks and uncertainties; (5) Poorly aligned incentives — landlord/tenant split incentive (landlord pays, tenant saves).',svgSide:null},
+  {term:'Landlord-tenant split incentive',def:'Key barrier to energy efficiency: landlords bear the cost of installing insulation/heat pumps, but tenants receive the benefit of lower energy bills. This misalignment discourages private investment in rental properties.',svgSide:null},
+  {term:'IEA WEO 2024 — efficiency levers',def:'Technical efficiency (building retrofits, vehicle fuel economy) = largest share of energy savings by 2030. Fuel switching (fossil fuels to electricity/renewables) = second largest. Behaviour = smaller but important share in NZE scenario.',svgSide:null},
+  {term:'UK Electricity Demand Reduction Pilot (2016)',def:'Part of EMR; tested demand reduction competing in Capacity Market. 23.3 MW purchased at average £203/kW; mostly lighting upgrades (e.g. Sainsbury\'s). Showed principle works but scale was small.',svgSide:null},
+  {term:'Demand Flexibility Service (DFS, 2022/23)',def:'National Grid ESO scheme to incentivise consumers to shift demand at specific times. First event 23 Jan 2023: 323-336 MW reduction. British Gas PeakSave: paid £1.8m (~£28.56/customer); 147 MWh saved. Total DFS season: 3.3 GWh saved.',svgSide:null},
+  {term:'DFS fairness challenges',def:'Households with higher and more flexible energy demand (e.g. EVs, heat pumps) earn higher rewards; those with low demand make effort but receive very little. Income-constrained households or those with health conditions found it harder. Fairness is a key design challenge for DSR programmes.',svgSide:null},
+  {term:'Green Deal (UK, 2013-2015)',def:'Market mechanism: loans attached to property, repaid through energy bill savings. Golden rule: savings must cover repayments. Loan rate 6.96%; predicted savings often didn\'t materialise. Very low take-up; axed 2015. Critique: too complex, insufficiently attractive.',svgSide:null},
+  {term:'CCC on energy efficiency (Nov 2022)',def:'Lord Deben to Chancellor Hunt: "A decade ago, 2.3 million energy efficiency measures were installed annually. In 2021, fewer than 100,000 were installed. Reducing energy demand in UK buildings is now the BIGGEST GAP in current Government energy policy."',svgSide:null},
+  {term:'Payback periods for energy efficiency (UK)',def:'Shortest: hot water tank insulation (few years), cavity wall insulation (ETT), draught proofing. Medium: loft insulation. Long: double glazing from band E. Very long: solid wall insulation, solar water heating. Paybacks improve significantly under higher carbon/energy price scenarios.',svgSide:null},
+  {term:'Boiler Upgrade Scheme (BUS)',def:'£7,500 grant toward air source heat pump (or £5,000 biomass boiler). £205m over 3 years (2022-2025) = ~90,000 upgrades. But only 23,000 grants paid in 2024 vs target of 600,000 heat pumps/year by 2028. Significantly off-track.',svgSide:null},
+  {term:'Future Homes Standard',def:'Proposed: new homes must have low-carbon heating (heat pumps), rooftop solar, high-grade insulation. Announced June 2025 for Autumn publication; NOT yet published as of Feb 2026. Government accused of caving in to building lobby by allowing councils limited scope to demand higher standards.',svgSide:null},
+  {term:'Direct rebound effect',def:'Efficiency improvements make energy services cheaper → demand increases (substitution and income effects) → some energy savings offset. Direct rebound estimated at 10-30% for most energy services. Car fuel economy → people drive more miles.',svgSide:'rebound'},
+  {term:'Indirect rebound effect',def:'Money saved on energy bills is spent on other goods/services that also require energy. E.g. cheaper heating → spend savings on a flight to Spain. Combined with direct rebound: total economy-wide rebound could erode >50% of savings.',svgSide:'rebound'},
+  {term:'Jevons Paradox / Khazzoom-Brookes postulate',def:'Jevons (1865): more efficient steam engines led to MORE total coal use. K-B postulate: if energy prices unchanged, cost-effective efficiency leads to higher economy-wide energy consumption ("backfire"). Economy-wide carbon pricing can counter this.',svgSide:null},
+  {term:'Brockway & Sorrell (2021) rebound findings',def:'Economy-wide rebound may erode >50% of energy efficiency savings. >2/3 of studies found rebound >50%. Six studies found ≥100% (backfire). Rebound effects not adequately included in global climate models → risk of overestimating future energy savings.',svgSide:'rebound'},
+  {term:'Michigan weatherisation study',def:'Aggressive encouragement: take-up <1% → ~6%. Energy saved 10-20%. BUT: projected savings 2.5× actual; upfront costs ~2× value of realised savings; no evidence of temperature increase; social IRR = -9.5%; cost of CO2 avoidance = $329/ton.',svgSide:null},
+  {term:'Behavioural economics and energy',def:'Bounded rationality: people make suboptimal choices due to time/information constraints. "Nudge" (Thaler & Sunstein 2008): subtle interventions can encourage better choices. BUT limits of nudges: insufficient for deep decarbonisation. Carbon footprint framing may distract from systemic policy change.',svgSide:null},
+  {term:'DESNZ six priorities (2026)',def:'(1) Clean power 2030/net zero; (2) British jobs, supply chains, Great British Energy; (3) Warm Homes Plan; (4) Fairer deal for consumers; (5) Just/orderly transition from fossil fuels; (6) Leading international climate action.',svgSide:null},
+  {term:'UK Clean Power 2030',def:'Aim: ≥95% of electricity from low-carbon sources by 2030; ≤5% unabated gas. Cost: ~£40bn/year to 2030. NESO: "achievable but requires bold action across every area." Ed Miliband: sprint to "homegrown clean power."',svgSide:'scenario'},
+  {term:'CCC 7th Carbon Budget',def:'535 MtCO2e for 2038-2042. Electrification + low-carbon electricity = 60% of emission reductions by 2040. Roll-out rates for EVs, heat pumps, renewables comparable to mobile phones, refrigerators, internet connections.',svgSide:null},
+  {term:'UN SDG Goal 7 — Affordable Clean Energy',def:'Global electricity access: 92% in 2023 (up from 84% in 2010). Clean cooking: 64→74% (2015-2023). Renewables to surpass coal as primary electricity source in 2025. BUT without acceleration: 645m without electricity, 1.8bn without clean cooking by 2030.',svgSide:null},
+  {term:'Heat pump economics — Dr Radcliffe example',def:'Cost: £13,700 (after £7,500 BUS grant). Annual saving: £600 (400% COP). NPV at 5% over 20 years: −£5,926. MAC: £249/tCO2. Financial case weak because electricity:gas price ratio too high. Decision point: if ratio improves, case strengthens.',svgSide:null},
+  {term:'Engineer vs economist perspective (Birol & Keppler)',def:'Engineer: world = set of given technologies with fixed factor proportions. Economist: world = open field with factors recombined in response to prices and marginal productivities. "A balance between economic and technology-based policy approaches has to be sought."',svgSide:null},
+  {term:'Stern (2007) summary',def:'"Science reveals the nature of the dangers and provides the foundations for the technologies that can enable the world to avoid them. Economics offers a framework that can help policy-makers decide how much action to take, and with what policy instruments."',svgSide:null},
+  {term:'Energy efficiency ≠ energy demand reduction',def:'Due to the rebound effect, improving energy efficiency does not automatically reduce energy consumption. Energy demand reduction requires: efficiency improvements PLUS carbon pricing to maintain high energy costs PLUS behavioural change policies.',svgSide:'rebound'},
+];
+
+// ---- QUIZ ENGINE ----
+let quizDeck=[],qIdx=0,score=0,answered=0,answered_q=false;
+
+function startQuiz(){
+  quizDeck=[...ALL_QUESTIONS].sort(()=>Math.random()-0.5).slice(0,15);
+  qIdx=0;score=0;answered=0;answered_q=false;renderQuestion();
+}
+
+function renderQuestion(){
+  answered_q=false;
+  if(qIdx>=quizDeck.length){showResults();return;}
+  const q=quizDeck[qIdx];
+  const pct=Math.round((qIdx/quizDeck.length)*100);
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('q-counter').textContent='Question '+(qIdx+1)+' of '+quizDeck.length;
+  document.getElementById('score-badge').textContent='Score: '+score+' / '+answered;
+  let html=`<div class="q-meta">${q.topic} · ${q.type==='mc'?'Multiple choice':'Short answer'}</div>`;
+  html+=`<div class="q-text">${q.q}</div>`;
+  if(q.svgGen){html+=`<div class="q-svg-wrap">${getSvg(q.svgGen)}</div>`;}
+  if(q.type==='mc'){
+    html+='<div class="q-options">';
+    q.opts.forEach((o,i)=>{html+=`<button class="q-opt" id="opt-${i}" onclick="checkMC(${i})">${o}</button>`;});
+    html+='</div>';
+  }else{
+    html+=`<div class="short-ans-wrap"><input type="text" id="short-input" placeholder="Type your answer…" onkeydown="if(event.key==='Enter')checkShort()"><button class="btn-primary" onclick="checkShort()">Submit</button></div>`;
+  }
+  html+=`<div id="feedback" style="display:none" class="feedback"></div>`;
+  html+=`<div class="q-actions" id="q-actions" style="display:none"><button class="btn-primary" onclick="nextQ()">Next <i class="ti ti-arrow-right"></i></button></div>`;
+  html+=`<div style="margin-top:8px"><button class="btn-skip" onclick="skipQ()">Skip</button></div>`;
+  document.getElementById('q-card').innerHTML=html;
+  if(q.type==='short')setTimeout(()=>document.getElementById('short-input')?.focus(),50);
+}
+
+function checkMC(chosen){
+  if(answered_q)return;answered_q=true;answered++;
+  const q=quizDeck[qIdx];
+  document.querySelectorAll('.q-opt').forEach(o=>o.disabled=true);
+  const ok=chosen===q.ans;
+  if(ok){score++;addXP(10);document.getElementById('opt-'+chosen).classList.add('correct','bounce');}
+  else{document.getElementById('opt-'+chosen).classList.add('wrong');document.getElementById('opt-'+q.ans).classList.add('correct');}
+  updStreak(ok);
+  const fb=document.getElementById('feedback');
+  fb.className='feedback '+(ok?'correct':'wrong');
+  fb.innerHTML='<strong>'+(ok?'Correct! ':'Not quite. ')+'</strong>'+q.exp;
+  fb.style.display='block';
+  document.getElementById('q-actions').style.display='flex';
+  document.getElementById('score-badge').textContent='Score: '+score+' / '+answered;
+  const card=document.getElementById('q-card');
+  card.classList.add(ok?'flash-correct':'flash-wrong');
+  setTimeout(()=>card.classList.remove('flash-correct','flash-wrong'),500);
+  document.querySelector('.btn-skip')?.remove();
+}
+
+function checkShort(){
+  if(answered_q)return;
+  const inp=document.getElementById('short-input');const ua=inp.value.trim().toLowerCase();if(!ua)return;
+  answered_q=true;answered++;inp.disabled=true;
+  const q=quizDeck[qIdx];
+  const hits=q.keywords.filter(k=>ua.includes(k.toLowerCase())).length;const ok=hits>=2;
+  if(ok){score++;addXP(5);}
+  updStreak(ok);
+  const fb=document.getElementById('feedback');
+  fb.className='feedback '+(ok?'correct':'wrong');
+  fb.innerHTML='<strong>'+(ok?'Good answer! ':'Fuller answer: ')+'</strong>'+q.ans;
+  fb.style.display='block';
+  document.getElementById('q-actions').style.display='flex';
+  document.getElementById('score-badge').textContent='Score: '+score+' / '+answered;
+  document.querySelector('.btn-skip')?.remove();
+}
+
+function skipQ(){qIdx++;renderQuestion();}
+function nextQ(){qIdx++;renderQuestion();}
+
+function showResults(){
+  document.getElementById('progress-fill').style.width='100%';
+  const pct=answered>0?Math.round(score/answered*100):0;
+  const msg=pct>=80?'Excellent — top of the class!':pct>=60?'Solid effort — review missed topics in Tutor mode.':'Keep going — use Tutor and Diagrams to revisit the tricky bits.';
+  document.getElementById('q-card').innerHTML=`<div class="results-card"><h2>Quiz complete</h2><div class="big-score">${score}/${answered}</div><div class="xp-gained">+${score*10} XP earned</div><p style="color:var(--color-text-secondary,#666);margin-bottom:1.5rem">${msg}</p><button class="btn-primary" onclick="startQuiz()"><i class="ti ti-refresh"></i> New random quiz</button></div>`;
+}
+
+// ---- FLASHCARD ENGINE ----
+let fcDeck=[],fcIdx=0,fcFlipped=false,wrongDeck=[];
+
+function renderFC(){
+  if(!fcDeck.length)return;
+  document.getElementById('fc-deck').classList.remove('flipped');
+  fcFlipped=false;
+  document.getElementById('fc-rate').classList.remove('visible');
+  const c=fcDeck[fcIdx];
+  document.getElementById('fc-term').textContent=c.term;
+  document.getElementById('fc-def').textContent=c.def;
+  document.getElementById('fc-counter').textContent='Card '+(fcIdx+1)+' of '+fcDeck.length;
+  const fSvg=document.getElementById('fc-front-svg');
+  const bSvg=document.getElementById('fc-back-svg');
+  if(c.svgSide){
+    const svgHtml=getSvg(c.svgSide);
+    bSvg.innerHTML=svgHtml;bSvg.style.display='block';
+    fSvg.style.display='none';
+  }else{
+    bSvg.style.display='none';fSvg.style.display='none';
+  }
+  updateWeakUI();
+}
+
+function flipCard(){
+  fcFlipped=!fcFlipped;
+  document.getElementById('fc-deck').classList.toggle('flipped',fcFlipped);
+  if(fcFlipped){document.getElementById('fc-rate').classList.add('visible');}
+  else{document.getElementById('fc-rate').classList.remove('visible');}
+}
+
+function rateCard(gotIt){
+  const c=fcDeck[fcIdx];
+  if(!gotIt){if(!wrongDeck.find(w=>w.term===c.term)){wrongDeck.push(c);}}
+  else{wrongDeck=wrongDeck.filter(w=>w.term!==c.term);}
+  updateWeakUI();
+  nextFC();
+}
+
+function updateWeakUI(){
+  const cnt=wrongDeck.length;
+  const wc=document.getElementById('weak-count');
+  const wb=document.getElementById('btn-practice-weak');
+  if(cnt>0){wc.textContent=cnt+' weak card'+(cnt===1?'':'s');wc.style.display='inline-block';wb.style.display='inline-block';}
+  else{wc.style.display='none';wb.style.display='none';}
+}
+
+function practiceWeak(){if(wrongDeck.length===0)return;fcDeck=[...wrongDeck];fcIdx=0;renderFC();}
+function nextFC(){fcIdx=(fcIdx+1)%fcDeck.length;renderFC();}
+function prevFC(){fcIdx=(fcIdx-1+fcDeck.length)%fcDeck.length;renderFC();}
+function shuffleFC(){fcDeck=[...FLASHCARDS].sort(()=>Math.random()-0.5);fcIdx=0;wrongDeck=[];renderFC();}
+function restartFC(){fcDeck=[...FLASHCARDS];fcIdx=0;wrongDeck=[];renderFC();}
+
+// ---- INIT ----
+window.addEventListener('load',()=>{fcDeck=[...FLASHCARDS];renderFC();});
+</script>
+</body>
+</html>
