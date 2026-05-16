@@ -635,7 +635,8 @@ async function sendChat(){
   appendMsg('user',q);chatHist.push({role:'user',content:q});
   const th=appendMsg('ai','Thinking…',true);
   try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':'sk-ant-','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    const apiUrl=window.location.hostname==='claude.ai'||window.location.hostname.includes('claude.ai')?'https://api.anthropic.com/v1/messages':'/api/chat';
+    const r=await fetch(apiUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYSTEM_PROMPT,messages:chatHist})});
     const d=await r.json();
     const reply=d.content?.filter(b=>b.type==='text').map(b=>b.text).join('')||'Sorry, no response.';
     th.remove();appendMsg('ai',reply);chatHist.push({role:'assistant',content:reply});addXP(2);
